@@ -65,6 +65,26 @@ class Player:
         self.guesses.append(coord)
 
 
+class AI:
+    """
+    Represents the AI player object within the game
+    """
+    def __init__(self, ships):
+        """
+        Creates the AI player
+        :param ships: A list of list of coordinates to populate the AI's ships
+        """
+        self.ships = ships
+        self.guesses = []
+
+    def add_guess(self, coord):
+        """
+        Append a guess coordinate to the player's guesses
+        :param coord: The guess coordinate
+        :return: void
+        """
+        self.guess.append(coord)
+
 class BoardSquare(pygame.sprite.Sprite):
     """
     Encapsulates the displayable idea of a board square with dimensional and color properties

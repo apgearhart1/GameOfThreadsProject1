@@ -1,7 +1,7 @@
 
 from utils import colors, SCREEN_WIDTH, SCREEN_HEIGHT
 from gui_functions import *
-from gui_classes import State, Player, BoardSquare, Board, TextBox, Ship
+from gui_classes import State, Player, BoardSquare, Board, TextBox, Ship, Scoreboard
 import sys
 import pygame
 from pygame.locals import *
@@ -13,6 +13,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 imageBattleshipSurface = pygame.image.load('battleship-1200x900.jpg').convert()
 blackBackground = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+score_tracker = Scoreboard()
 
 
 def run_start():

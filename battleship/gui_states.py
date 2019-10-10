@@ -25,7 +25,8 @@ def run_start():
 
     battleshipTextBox = TextBox("Battleship!", (SCREEN_WIDTH / 3, SCREEN_HEIGHT / 4), fontsize=96)
     screen.blit(battleshipTextBox.surface, battleshipTextBox.rect)
-
+    pygame.mixer.music.load('../sounds/intro.mp3')
+    pygame.mixer.music.play(-1)
     instructionsTextBox = TextBox("Press the SPACE bar to play", (SCREEN_WIDTH / 3, SCREEN_HEIGHT / 2), fontsize=48)
     screen.blit(instructionsTextBox.surface, instructionsTextBox.rect)
 
@@ -197,7 +198,6 @@ def run_choose_board_location(ship, otherShipCoords):
     ## display a board with the other placed ships' coordinates filled in
     initialBoard = generate_placement_board(otherCoordsPairsList)
 
-
     def escape_placement():
         blit_board(screen, initialBoard)
         pygame.display.flip()
@@ -327,6 +327,9 @@ def run_game_loop(shipCoords1, shipCoords2):
     :param shipCoords2: a list of lists of coordinates corresponding to the second player's chosen ship locations.
     :return: string - the name of the player who won (either "Player 1" or "Player 2")
     """
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load('../sounds/gameplay.mp3')
+    pygame.mixer.music.play(0)
 
     switchTurnsInstructionsBox = TextBox("Press the SPACE key to switch turns.", (240, 48))
     switchTurnsInstructionsBox2 = TextBox("Please switch spots with your playing partner. Press any key to continue.", (35, SCREEN_HEIGHT / 2), fontsize=44)
@@ -439,6 +442,9 @@ def winner_screen_prompt_replay(winnerName):
     :param winnerName: string - the name of the game's winner
     :return: bool - represents whether or not to play again
     """
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load('../sounds/win.mp3')
+    pygame.mixer.music.play(0)
     screen.fill(colors['BLACK'])
     # display the winner text box
     winnerTextBox = TextBox("{} has won the game!".format(winnerName), (130, 48), fontsize=96, textcolor=colors['GREEN'])
@@ -465,6 +471,3 @@ def winner_screen_prompt_replay(winnerName):
                         return True
                     return False
         pygame.time.delay(200)
-
-
-

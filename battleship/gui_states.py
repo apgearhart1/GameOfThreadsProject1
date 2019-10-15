@@ -6,6 +6,7 @@ import sys
 import pygame
 from pygame.locals import *
 from functools import reduce
+import random
 
 pygame.init()
 pygame.display.set_caption("Battleship")
@@ -157,6 +158,33 @@ def run_get_number_ships():
                     if numberBoxes[i - 1].rect.collidepoint(event.pos):
                         return i
 
+def run_place_ai_ships(numShips):
+    """
+    """
+    #TODO make sure ships can't be placed on top of eachother
+    coordinates = []
+    shipToPlace = numShips
+
+    for index in range(0, numShips):
+
+        individualCoordinates = []
+
+        startX = random.randint(1, 8 - shipToPlace)
+        startY = random.randint(1, 8 - shipToPlace)
+
+        verticalOrHorizontal = random.randint(1, 2) # 1 -> vertical, 2 -> horizontal
+
+        if verticalOrHorizontal == 1:
+            for i in range(0, shipToPlace):
+                individualCoordinates.append((startY + i, startX))
+        else:
+            for i in range(0, shipToPlace):
+                individualCoordinates.append((startY, startX + i))
+
+        coordinates.append(individualCoordinates)
+        shipToPlace = shipToPlace - 1
+
+    return coordinates
 
 # Returns a list of lists of (row, col) coordinates. Example: [[(1,1), (1,2), (1,3)], [(3,3), (4,3)], [(8,8)]]
 def run_place_ships(numShips, playerName):

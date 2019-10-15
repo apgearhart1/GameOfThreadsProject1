@@ -12,7 +12,7 @@ def run():
         gui_states.run_start()
         numOfPlayers = gui_states.run_get_num_players()
         if(numOfPlayers == 1):
-            pass
+            aiDifficulty = gui_states.run_get_ai_difficulty_level()
         else:
             num = gui_states.run_get_number_ships()
             player1ships = gui_states.run_place_ships(num, "Player 1")

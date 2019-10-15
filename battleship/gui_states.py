@@ -41,6 +41,43 @@ def run_start():
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 return
 
+def run_get_num_players():
+    """
+    This will display a screen where users can select if they want to play with one or two players.
+    """
+    # define background, instruction, box for each number of ships
+    def create_number_boxes():
+        def create_number_box(j):
+            x = SCREEN_WIDTH / 2
+            y = SCREEN_HEIGHT - (SCREEN_HEIGHT / 3)
+            return TextBox("{}".format(j), ((x * j) - 300, y), fontsize=128)
+        return reduce(lambda others, j: others + [create_number_box(j)], [1, 2], [])
+
+
+    instructionsTextBox = TextBox("Do you want to play with one or two players?", (SCREEN_WIDTH / 7, SCREEN_HEIGHT / 3), fontsize=64)
+    numberBoxes = create_number_boxes()
+
+    # draw background
+    screen.blit(imageBattleshipSurface, (0, 0))
+
+    # draw instruction
+    screen.blit(instructionsTextBox.surface, instructionsTextBox.rect)
+
+    # draw number boxes
+    for box in numberBoxes:
+        screen.blit(box.surface, box.rect)
+
+    pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                for i in [1, 2, 3, 4, 5]:
+                    if numberBoxes[i - 1].rect.collidepoint(event.pos):
+                        return i
 
 # returns the number of ships
 def run_get_number_ships():

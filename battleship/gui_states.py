@@ -159,9 +159,14 @@ def run_get_number_ships():
                         return i
 
 def run_place_ai_ships(numShips):
+    """ This method will randomly create the coordinates for the AI's ships
+    :param numShips: int - represents the number of placeable ships
+    :return: a list of list of coordinates (row, col). Each sub list represents the grouping of a ship.
+
+    TODO make sure ships can't be placed on top of eachother. Right now, they could be placed on top of 
+         eachother if the random numbers work out that way
     """
-    """
-    #TODO make sure ships can't be placed on top of eachother
+    
     coordinates = []
     shipToPlace = numShips
 

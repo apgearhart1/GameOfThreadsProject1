@@ -462,6 +462,8 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
     player2 = Player(shipCoords2, "AI")
     state = State(player1, player2)
 
+    
+
 
     def generate_sunk_ship_alert(shipLength):
         return TextBox("You sunk the other player's {}".format(ship_length_to_name(shipLength)), (SCREEN_WIDTH / 4, SCREEN_HEIGHT * (9 / 10)), textcolor=colors['GREEN'])
@@ -556,25 +558,24 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
             pygame.display.flip()
             pygame.time.delay(30)
         else:
-            aiTitleText = TextBox("The AI is playing now", (240, 48))
-            screen.blit(aiTitleText.surface, aiTitleText.rect)
-            pygame.display.flip()
             if aiDifficulty == 1:
                 x = random.randint(1, 8)
                 y = random.randint(1, 8)
                 print("AI Guess:", (y, x))
-                print(state.player1.name)
                 state.update((y, x))
+            elif aiDifficulty == 2:
+                x = random.randint(1, 8)
+                y = random.randint(1, 8)
+                print("AI Guess:", (y, x))
                 print(state.player1.name)
-                aiGuessedText = TextBox("Guess: {}".format((y, x)))
+                if (y,x) in shipCoords1:
+                    pass
+                state.update((y,x))
+                aiGuessedText = TextBox("Guess: {}".format((y,x)))
                 pygame.display.flip()
                 pygame.time.delay(1500)
-                # if run_switch_turns():
-                #     print("here")
-                #     screen.fill(colors['BLACK'])
-                # pass
-            elif aiDifficulty == 2:
-                pass
+                
+
             else:
                 pass
   

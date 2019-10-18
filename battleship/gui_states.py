@@ -486,6 +486,8 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
     player2 = Player(shipCoords2, "AI")
     state = State(player1, player2)
 
+    hits = []
+    
 
 
 
@@ -509,6 +511,36 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 elif event.type == pygame.MOUSEMOTION and not square.rect.collidepoint(event.pos):
                     return None
             pygame.time.delay(30)
+
+    def med_ai_traverse(ax, ay, shipCoords1, arr):
+        if ay+1 < 9:
+            if (ay+1, ax) in shipCoords1:
+                ct+=1
+                arr.append(ay+1, ax)
+            else:
+                return
+            return med_ai_traverse(ax, ay+1, shipCoords1, arr)
+        if ax+1 < 9:
+            if (ay, ax+1) in shipCoords1:
+                ct+=1
+                arr.append(ay, ax+1)
+            else:
+                return
+            return med_ai_traverse(ax+1, ay, shipCoords1, arr)
+        if ay-1 > 0:
+            if (ay-1, ax) in shipCoords1:
+                ct+=1
+                arr.append(ay-1, ax)
+            else:
+                return
+            return med_ai_traverse(ax, ay-1, shipCoords1, arr)
+        if ax-1 > 0:
+            if (ay, ax-1) in shipCoords1:
+                ct+=1
+                arr.append(ay, ax-1)
+            else:
+                return arr
+            return med_ai_traverse(ax-1, ay, shipCoords1, arr)
 
     def run_switch_turns():
         # display switch turns instruction message
@@ -602,8 +634,15 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 print("AI Guess:", (y, x))
                 print(state.player1.name)
                 if (y,x) in shipCoords1:
-                    pass
-                state.update((y,x))
+                    ax = x
+                    ay = y
+                    ct = 1
+                    arr = [(ay,ax)]
+                    listOfHitsInTurn = med_ai_traverse(ax, ay, shipCoords1, arr)
+                    hits.append(listOfHitsInTurn)
+                    state.update(listOfHitsInTurn)
+                else:
+                    state.update(y,x)
                 aiGuessedText = TextBox("Guess: {}".format((y,x)))
                 pygame.display.flip()
                 pygame.time.delay(1500)
@@ -611,7 +650,8 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
 
             else:
                 pass
-
+    
+  
 
 
 # the main game loop

@@ -55,6 +55,7 @@ class Player:
         self.ships = ships
         self.guesses = []
         self.name = name
+        
 
     def add_guess(self, coord):
         """
@@ -244,8 +245,14 @@ class Scoreboard:
 		self.p1_score = 0;
 		self.p2_score = 0;
 
-	def updateScore(self, winner):
+	def update_win_score(self, winner):
 		if winner == "player1":
 			self.p1_score = self.p1_score + 1
 		if winner == "player2":
 			self.p2_score = self.p2_score + 1
+			
+	def get_p1_wins(self):
+		return self.p1_score
+			
+	def get_p2_wins(self):
+		return self.p2_score

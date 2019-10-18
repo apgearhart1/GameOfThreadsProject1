@@ -556,23 +556,14 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
             pygame.display.flip()
             pygame.time.delay(30)
         else:
-            aiTitleText = TextBox("The AI is playing now", (240, 48))
-            screen.blit(aiTitleText.surface, aiTitleText.rect)
-            pygame.display.flip()
             if aiDifficulty == 1:
                 x = random.randint(1, 8)
                 y = random.randint(1, 8)
                 print("AI Guess:", (y, x))
-                print(state.player1.name)
                 state.update((y, x))
-                print(state.player1.name)
                 aiGuessedText = TextBox("Guess: {}".format((y, x)))
                 pygame.display.flip()
                 pygame.time.delay(1500)
-                # if run_switch_turns():
-                #     print("here")
-                #     screen.fill(colors['BLACK'])
-                # pass
             elif aiDifficulty == 2:
                 pass
             else:

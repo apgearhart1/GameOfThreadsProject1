@@ -1,7 +1,7 @@
 
 from utils import colors, SCREEN_WIDTH, SCREEN_HEIGHT
 from gui_functions import *
-from gui_classes import State, Player, BoardSquare, Board, TextBox, Ship
+from gui_classes import State, Player, BoardSquare, Board, TextBox, Ship, Scoreboard
 import sys
 import pygame
 from pygame.locals import *
@@ -14,6 +14,7 @@ screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 imageBattleshipSurface = pygame.image.load('battleship-1200x900.jpg').convert()
 blackBackground = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
+score_tracker = Scoreboard()
 
 
 def run_start():
@@ -26,7 +27,8 @@ def run_start():
 
     battleshipTextBox = TextBox("Battleship!", (SCREEN_WIDTH / 3, SCREEN_HEIGHT / 4), fontsize=96)
     screen.blit(battleshipTextBox.surface, battleshipTextBox.rect)
-
+    pygame.mixer.music.load('../sounds/intro.mp3')
+    pygame.mixer.music.play(-1)
     instructionsTextBox = TextBox("Press the SPACE bar to play", (SCREEN_WIDTH / 3, SCREEN_HEIGHT / 2), fontsize=48)
     screen.blit(instructionsTextBox.surface, instructionsTextBox.rect)
 
@@ -40,6 +42,81 @@ def run_start():
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
                 return
 
+def run_get_num_players():
+    """
+    This will display a screen where users can select if they want to play with one or two players.
+    """
+    # define background, instruction, box for each number of ships
+    def create_number_boxes():
+        def create_number_box(j):
+            x = SCREEN_WIDTH / 2
+            y = SCREEN_HEIGHT - (SCREEN_HEIGHT / 3)
+            return TextBox("{}".format(j), ((x * j) - 300, y), fontsize=128)
+        return reduce(lambda others, j: others + [create_number_box(j)], [1, 2], [])
+
+
+    instructionsTextBox = TextBox("Do you want to play with one or two players?", (SCREEN_WIDTH / 7, SCREEN_HEIGHT / 3), fontsize=64)
+    numberBoxes = create_number_boxes()
+
+    # draw background
+    screen.blit(imageBattleshipSurface, (0, 0))
+
+    # draw instruction
+    screen.blit(instructionsTextBox.surface, instructionsTextBox.rect)
+
+    # draw number boxes
+    for box in numberBoxes:
+        screen.blit(box.surface, box.rect)
+
+    pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                for i in [1, 2]:
+                    if numberBoxes[i - 1].rect.collidepoint(event.pos):
+                        return i
+
+def run_get_ai_difficulty_level():
+    """
+    This will display a screen where users can select the difficulty of the AI to play agianst in one player mode
+    """
+    # define background, instruction, box for each number of ships
+    def create_number_boxes():
+        def create_number_box(j):
+            x = SCREEN_WIDTH / 3
+            y = SCREEN_HEIGHT - (SCREEN_HEIGHT / 3)
+            return TextBox("{}".format(j), ((x * j) - 200, y), fontsize=128)
+        return reduce(lambda others, j: others + [create_number_box(j)], [1, 2, 3], [])
+
+
+    instructionsTextBox = TextBox("Select AI diffiuclty: 1) Easy, 2) Medium, 3) Hard", (SCREEN_WIDTH / 7, SCREEN_HEIGHT / 3), fontsize=64)
+    numberBoxes = create_number_boxes()
+
+    # draw background
+    screen.blit(imageBattleshipSurface, (0, 0))
+
+    # draw instruction
+    screen.blit(instructionsTextBox.surface, instructionsTextBox.rect)
+
+    # draw number boxes
+    for box in numberBoxes:
+        screen.blit(box.surface, box.rect)
+
+    pygame.display.flip()
+
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                for i in [1, 2, 3]:
+                    if numberBoxes[i - 1].rect.collidepoint(event.pos):
+                        return i
 
 # returns the number of ships
 def run_get_number_ships():
@@ -81,6 +158,38 @@ def run_get_number_ships():
                     if numberBoxes[i - 1].rect.collidepoint(event.pos):
                         return i
 
+def run_place_ai_ships(numShips):
+    """ This method will randomly create the coordinates for the AI's ships
+    :param numShips: int - represents the number of placeable ships
+    :return: a list of list of coordinates (row, col). Each sub list represents the grouping of a ship.
+
+    TODO make sure ships can't be placed on top of eachother. Right now, they could be placed on top of 
+         eachother if the random numbers work out that way
+    """
+    
+    coordinates = []
+    shipToPlace = numShips
+
+    for index in range(0, numShips):
+
+        individualCoordinates = []
+
+        startX = random.randint(1, 8 - shipToPlace)
+        startY = random.randint(1, 8 - shipToPlace)
+
+        verticalOrHorizontal = random.randint(1, 2) # 1 -> vertical, 2 -> horizontal
+
+        if verticalOrHorizontal == 1:
+            for i in range(0, shipToPlace):
+                individualCoordinates.append((startY + i, startX))
+        else:
+            for i in range(0, shipToPlace):
+                individualCoordinates.append((startY, startX + i))
+
+        coordinates.append(individualCoordinates)
+        shipToPlace = shipToPlace - 1
+
+    return coordinates
 
 # Returns a list of lists of (row, col) coordinates. Example: [[(1,1), (1,2), (1,3)], [(3,3), (4,3)], [(8,8)]]
 def run_place_ships(numShips, playerName):
@@ -199,7 +308,6 @@ def run_choose_board_location(ship, otherShipCoords, playerName):
 
     ## display a board with the other placed ships' coordinates filled in
     initialBoard = generate_placement_board(otherCoordsPairsList)
-
 
     def escape_placement():
         blit_board(screen, initialBoard)
@@ -345,6 +453,9 @@ def run_game_loop(shipCoords1, shipCoords2):
     :param shipCoords2: a list of lists of coordinates corresponding to the second player's chosen ship locations.
     :return: string - the name of the player who won (either "Player 1" or "Player 2")
     """
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load('../sounds/gameplay.mp3')
+    pygame.mixer.music.play(0)
 
     switchTurnsInstructionsBox = TextBox("Press the SPACE key to switch turns.", (240, 48))
     switchTurnsInstructionsBox2 = TextBox("Please switch spots with your playing partner. Press any key to continue.", (35, SCREEN_HEIGHT / 2), fontsize=44)
@@ -457,6 +568,9 @@ def winner_screen_prompt_replay(winnerName):
     :param winnerName: string - the name of the game's winner
     :return: bool - represents whether or not to play again
     """
+    pygame.mixer.music.stop()
+    pygame.mixer.music.load('../sounds/win.mp3')
+    pygame.mixer.music.play(0)
     screen.fill(colors['BLACK'])
     # display the winner text box
     winnerTextBox = TextBox("{} has won the game!".format(winnerName), (130, 48), fontsize=96, textcolor=colors['GREEN'])
@@ -483,6 +597,3 @@ def winner_screen_prompt_replay(winnerName):
                         return True
                     return False
         pygame.time.delay(200)
-
-
-

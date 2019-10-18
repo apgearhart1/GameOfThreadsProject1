@@ -55,6 +55,7 @@ class Player:
         self.ships = ships
         self.guesses = []
         self.name = name
+        
 
     def add_guess(self, coord):
         """

@@ -561,9 +561,6 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 y = random.randint(1, 8)
                 print("AI Guess:", (y, x))
                 state.update((y, x))
-                aiGuessedText = TextBox("Guess: {}".format((y, x)))
-                pygame.display.flip()
-                pygame.time.delay(1500)
             elif aiDifficulty == 2:
                 pass
             else:

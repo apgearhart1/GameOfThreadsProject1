@@ -63,7 +63,7 @@ class Player:
         :return: void
         """
         self.guesses.append(coord)
-    
+
     def get_name(self):
         """
         Return the name of the player
@@ -239,7 +239,7 @@ class Ship(pygame.sprite.Sprite):
         self.surface = pygame.Surface((self.squareWidth, self.squareHeight * self.length))
         self.rect = self.surface.fill(self.color).move(self.window_coord[0], self.window_coord[1])
 
-class Scoreboard: 
+class Scoreboard:
 	def __init__(self):
 		self.p1_score = 0;
 		self.p2_score = 0;

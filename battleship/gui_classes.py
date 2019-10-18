@@ -44,11 +44,11 @@ class State:
 
 class Player:
     """
-    Represents the encapsulation of ships, guesses, and name of a player
+    Represents the encapsulation of ships, guesses, and name of a player/AI
     """
     def __init__(self, ships, name):
         """
-        Creates the player
+        Creates the player or AI player
         :param ships: A list of list of coordinates to populate the player's ships
         :param name: The string representing the player's name
         """
@@ -58,32 +58,18 @@ class Player:
 
     def add_guess(self, coord):
         """
-        Append a guess coordinate to the player's guesses
+        Append a guess coordinate to the player/AI's guesses
         :param coord: The guess coordinate
         :return: void
         """
         self.guesses.append(coord)
-
-
-class AI:
-    """
-    Represents the AI player object within the game
-    """
-    def __init__(self, ships):
+    
+    def get_name(self):
         """
-        Creates the AI player
-        :param ships: A list of list of coordinates to populate the AI's ships
+        Return the name of the player
+        :return self.name
         """
-        self.ships = ships
-        self.guesses = []
-
-    def add_guess(self, coord):
-        """
-        Append a guess coordinate to the player's guesses
-        :param coord: The guess coordinate
-        :return: void
-        """
-        self.guess.append(coord)
+        return self.name
 
 class BoardSquare(pygame.sprite.Sprite):
     """

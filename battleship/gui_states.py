@@ -16,6 +16,9 @@ imageBattleshipSurface = pygame.image.load('battleship-1200x900.jpg').convert()
 blackBackground = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 score_tracker = Scoreboard()
 
+def playNavigate():
+    navigate = pygame.mixer.Sound('../sounds/navigate.wav')
+    navigate.play()
 
 def run_start():
     """
@@ -78,6 +81,7 @@ def run_get_num_players():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 for i in [1, 2]:
                     if numberBoxes[i - 1].rect.collidepoint(event.pos):
+                        playNavigate()
                         return i
 
 def run_get_ai_difficulty_level():
@@ -116,6 +120,7 @@ def run_get_ai_difficulty_level():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 for i in [1, 2, 3]:
                     if numberBoxes[i - 1].rect.collidepoint(event.pos):
+                        playNavigate()
                         return i
 
 # returns the number of ships
@@ -156,6 +161,7 @@ def run_get_number_ships():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 for i in [1, 2, 3, 4, 5]:
                     if numberBoxes[i - 1].rect.collidepoint(event.pos):
+                        playNavigate()
                         return i
 
 def run_place_ai_ships(numShips):
@@ -163,10 +169,10 @@ def run_place_ai_ships(numShips):
     :param numShips: int - represents the number of placeable ships
     :return: a list of list of coordinates (row, col). Each sub list represents the grouping of a ship.
 
-    TODO make sure ships can't be placed on top of eachother. Right now, they could be placed on top of 
+    TODO make sure ships can't be placed on top of eachother. Right now, they could be placed on top of
          eachother if the random numbers work out that way
     """
-    
+
     coordinates = []
     shipToPlace = numShips
 
@@ -274,6 +280,7 @@ def run_place_ships(numShips, playerName):
                 elif event.type == pygame.MOUSEBUTTONDOWN:
                     clickedShip = get_clicked_ship(event.pos)
                     if clickedShip is not None:
+                        playNavigate()
                         # highlight ship in the queue
                         highlight(screen, clickedShip, colors['GREEN'])
                         chosenLocation = run_choose_board_location(clickedShip, shipCoordsList, playerName)
@@ -286,7 +293,7 @@ def run_place_ships(numShips, playerName):
                             shipQueue.remove(clickedShip)
                             highlight(screen, clickedShip, colors['BLACK'])
                             # blit_objects(screen, shipQueue)
-        
+
 
         screen.blit(instructionsTextBox1.surface, instructionsTextBox1.rect)
         pygame.display.flip()
@@ -327,6 +334,8 @@ def run_choose_board_location(ship, otherShipCoords, playerName):
             pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN and square.rect.collidepoint(event.pos):
+                    #Dawson Note
+                    playNavigate()
                     return True
                 elif event.type == pygame.MOUSEMOTION and not square.rect.collidepoint(event.pos):
                     return False
@@ -342,9 +351,9 @@ def run_choose_board_location(ship, otherShipCoords, playerName):
             return False
         else:
             return True
-    
+
     #def ai_place_ship(anchor, shiplength, otherShipCoords):
-        
+
 
 
 
@@ -438,8 +447,8 @@ def run_choose_board_location(ship, otherShipCoords, playerName):
                                 return None
             pygame.display.flip()
             pygame.time.delay(50)
-    
-                
+
+
 def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
     """
     This is the main game loop for battleship. It consists of a loop the allows one player to guess, stores that guess, updates the current player, and then switches the turn.
@@ -449,7 +458,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
     """
     pygame.mixer.music.stop()
     pygame.mixer.music.load('../sounds/gameplay.mp3')
-    pygame.mixer.music.play(0)
+    pygame.mixer.music.play(-1)
 
     switchTurnsInstructionsBox = TextBox("Press the SPACE key to switch turns.", (240, 48))
     switchTurnsInstructionsBox2 = TextBox("Please switch spots with your playing partner. Press any key to continue.", (35, SCREEN_HEIGHT / 2), fontsize=44)
@@ -476,6 +485,8 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN and square.rect.collidepoint(event.pos):
+                    #Dawson Note
+                    playNavigate()
                     return square.grid_coord
                 elif event.type == pygame.MOUSEMOTION and not square.rect.collidepoint(event.pos):
                     return None
@@ -503,6 +514,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                                 pygame.quit()
                                 sys.exit()
                             elif event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
+                                playNavigate()
                                 screen.fill(colors['BLACK'])
                                 return True
             pygame.time.delay(50)
@@ -565,7 +577,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 pass
             else:
                 pass
-  
+
 
 
 # the main game loop
@@ -579,7 +591,7 @@ def run_game_loop(shipCoords1, shipCoords2):
     """
     pygame.mixer.music.stop()
     pygame.mixer.music.load('../sounds/gameplay.mp3')
-    pygame.mixer.music.play(0)
+    pygame.mixer.music.play(-1)
 
     switchTurnsInstructionsBox = TextBox("Press the SPACE key to switch turns.", (240, 48))
     switchTurnsInstructionsBox2 = TextBox("Please switch spots with your playing partner. Press any key to continue.", (35, SCREEN_HEIGHT / 2), fontsize=44)
@@ -606,6 +618,8 @@ def run_game_loop(shipCoords1, shipCoords2):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN and square.rect.collidepoint(event.pos):
+                    playNavigate()
+                    #Dawson Note
                     return square.grid_coord
                 elif event.type == pygame.MOUSEMOTION and not square.rect.collidepoint(event.pos):
                     return None
@@ -633,6 +647,7 @@ def run_game_loop(shipCoords1, shipCoords2):
                                 pygame.quit()
                                 sys.exit()
                             elif event.type == KEYDOWN or event.type == MOUSEBUTTONDOWN:
+                                playNavigate()
                                 screen.fill(colors['BLACK'])
                                 return True
             pygame.time.delay(50)
@@ -715,6 +730,7 @@ def winner_screen_prompt_replay(winnerName):
             elif event.type == MOUSEBUTTONDOWN:
                 clickedOnBox = get_intersect_object_from_list(event.pos, [yesBox, noBox])
                 if clickedOnBox is not None:
+                    playNavigate()
                     screen.fill(colors['BLACK'])
                     pygame.display.flip()
                     if clickedOnBox is yesBox:

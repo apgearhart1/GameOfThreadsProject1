@@ -6,6 +6,7 @@ import sys
 import pygame
 from pygame.locals import *
 from functools import reduce
+from random import *
 
 pygame.init()
 pygame.display.set_caption("Battleship")
@@ -97,8 +98,7 @@ def run_place_ships(numShips, playerName):
 
     instructionsTextBoxEscape = TextBox("Press the ESC button to cancel placing this ship.", (96, 102), fontsize=36)
 
-    instructionsTextBoxClick = TextBox("Click an anchor box on the grid. You will then be able to rotate your ship.",
-                                       (48, 48))
+    instructionsTextBoxClick = TextBox("Click an anchor box on the grid. You will then be able to rotate your ship.",(48, 48))
 
     def ship_size_to_coord(size):
         queueWidth = SCREEN_WIDTH / 3
@@ -157,31 +157,34 @@ def run_place_ships(numShips, playerName):
         blit_board(screen, generate_placement_board(encode_placement_board([], flatten(shipCoordsList))))
         screen.blit(instructionsTextBox1.surface, instructionsTextBox1.rect)
         pygame.display.flip()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                clickedShip = get_clicked_ship(event.pos)
-                if clickedShip is not None:
-                    # highlight ship in the queue
-                    highlight(screen, clickedShip, colors['GREEN'])
-                    chosenLocation = run_choose_board_location(clickedShip, shipCoordsList)
-                    if chosenLocation is None:
-                        cover_instructions(screen, instructionsTextBoxEscape)
-                        cover_instructions(screen, instructionsTextBoxClick)
-                        highlight(screen, clickedShip, colors['BLUE'])
-                    else:
-                        shipCoordsList += [chosenLocation]
-                        shipQueue.remove(clickedShip)
-                        highlight(screen, clickedShip, colors['BLACK'])
-                        # blit_objects(screen, shipQueue)
+        if playerName != "AI":
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    clickedShip = get_clicked_ship(event.pos)
+                    if clickedShip is not None:
+                        # highlight ship in the queue
+                        highlight(screen, clickedShip, colors['GREEN'])
+                        chosenLocation = run_choose_board_location(clickedShip, shipCoordsList, playerName)
+                        if chosenLocation is None:
+                            cover_instructions(screen, instructionsTextBoxEscape)
+                            cover_instructions(screen, instructionsTextBoxClick)
+                            highlight(screen, clickedShip, colors['BLUE'])
+                        else:
+                            shipCoordsList += [chosenLocation]
+                            shipQueue.remove(clickedShip)
+                            highlight(screen, clickedShip, colors['BLACK'])
+                            # blit_objects(screen, shipQueue)
+        
+
         screen.blit(instructionsTextBox1.surface, instructionsTextBox1.rect)
         pygame.display.flip()
         pygame.time.delay(200)
 
 
-def run_choose_board_location(ship, otherShipCoords):
+def run_choose_board_location(ship, otherShipCoords, playerName):
     """
     This is a sub-procedure to the procedure 'run_placed_ships'. Logically, this represents the state for the player to place an already selected ship.
     :param ship: a Ship object that holds the information about its length and other properties
@@ -224,6 +227,17 @@ def run_choose_board_location(ship, otherShipCoords):
                     cover_instructions(screen, instructionsTextBoxClick)
                     return None
             pygame.time.delay(100)
+
+    def ai_place_anchor(row, col):
+        anchor = [row, col]
+        if anchor in otherShipCoords:
+            return False
+        else:
+            return True
+    
+    #def ai_place_ship(anchor, shiplength, otherShipCoords):
+        
+
 
 
     def run_rotate_ship(shipLength, anchorCoord, firstOrientation):
@@ -280,42 +294,46 @@ def run_choose_board_location(ship, otherShipCoords):
     # screen.blit(instructionsTextBoxClick.surface, instructionsTextBoxClick.rect)
     # screen.blit(instructionsTextBoxEscape.surface, instructionsTextBoxEscape.rect)
     pygame.display.flip()
-
-    while True:
-        screen.blit(ship.surface, ship.rect)
-        screen.blit(instructionsTextBoxClick.surface, instructionsTextBoxClick.rect)
-        screen.blit(instructionsTextBoxEscape.surface, instructionsTextBoxEscape.rect)
-        pygame.display.flip()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                sys.exit()
-            elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
-                return None
-            elif event.type == MOUSEMOTION:
-                hoveredSquare = get_hovered_square(event.pos, initialBoard)
-                if hoveredSquare is not None:
-                    firstOrientation = first_possible_orientation(hoveredSquare.grid_coord, ship.length, otherShipCoords)
-                    if firstOrientation is not None:
-                        suggestionCoords = orientation_to_coord_list(hoveredSquare.grid_coord, ship.length, firstOrientation)
-                        displayBoard = generate_placement_board(encode_placement_board(suggestionCoords, otherShipCoords))
-                        didClick = wait_for_click_display(displayBoard, hoveredSquare)
-                        if didClick:
-                            placed = run_rotate_ship(ship.length, hoveredSquare.grid_coord, firstOrientation)
-                            if placed is not None:
-                                otherShipCoords += placed
-                                return placed
-                            else:
+    if playerName != "AI":
+        while True:
+            screen.blit(ship.surface, ship.rect)
+            screen.blit(instructionsTextBoxClick.surface, instructionsTextBoxClick.rect)
+            screen.blit(instructionsTextBoxEscape.surface, instructionsTextBoxEscape.rect)
+            pygame.display.flip()
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    return None
+                elif event.type == MOUSEMOTION:
+                    hoveredSquare = get_hovered_square(event.pos, initialBoard)
+                    if hoveredSquare is not None:
+                        firstOrientation = first_possible_orientation(hoveredSquare.grid_coord, ship.length, otherShipCoords)
+                        if firstOrientation is not None:
+                            suggestionCoords = orientation_to_coord_list(hoveredSquare.grid_coord, ship.length, firstOrientation)
+                            displayBoard = generate_placement_board(encode_placement_board(suggestionCoords, otherShipCoords))
+                            didClick = wait_for_click_display(displayBoard, hoveredSquare)
+                            if didClick:
+                                placed = run_rotate_ship(ship.length, hoveredSquare.grid_coord, firstOrientation)
+                                if placed is not None:
+                                    otherShipCoords += placed
+                                    return placed
+                                else:
+                                    escape_placement()
+                                    cover_instructions(screen, instructionsTextBoxEscape)
+                                    cover_instructions(screen, instructionsTextBoxClick)
+                                    return None
+                            elif didClick is None:
                                 escape_placement()
-                                cover_instructions(screen, instructionsTextBoxEscape)
                                 cover_instructions(screen, instructionsTextBoxClick)
                                 return None
-                        elif didClick is None:
-                            escape_placement()
-                            cover_instructions(screen, instructionsTextBoxClick)
-                            return None
-        pygame.display.flip()
-        pygame.time.delay(50)
+            pygame.display.flip()
+            pygame.time.delay(50)
+    
+                
+
+        
 
 
 # the main game loop

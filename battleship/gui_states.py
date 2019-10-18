@@ -471,6 +471,8 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
     player2 = Player(shipCoords2, "AI")
     state = State(player1, player2)
 
+    
+
 
     def generate_sunk_ship_alert(shipLength):
         return TextBox("You sunk the other player's {}".format(ship_length_to_name(shipLength)), (SCREEN_WIDTH / 4, SCREEN_HEIGHT * (9 / 10)), textcolor=colors['GREEN'])
@@ -574,7 +576,18 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 print("AI Guess:", (y, x))
                 state.update((y, x))
             elif aiDifficulty == 2:
-                pass
+                x = random.randint(1, 8)
+                y = random.randint(1, 8)
+                print("AI Guess:", (y, x))
+                print(state.player1.name)
+                if (y,x) in shipCoords1:
+                    pass
+                state.update((y,x))
+                aiGuessedText = TextBox("Guess: {}".format((y,x)))
+                pygame.display.flip()
+                pygame.time.delay(1500)
+                
+
             else:
                 pass
 

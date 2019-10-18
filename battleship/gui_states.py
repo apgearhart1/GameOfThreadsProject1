@@ -43,6 +43,7 @@ def run_start():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                playNavigate()
                 return
 
 def run_get_num_players():
@@ -340,6 +341,7 @@ def run_choose_board_location(ship, otherShipCoords, playerName):
                 elif event.type == pygame.MOUSEMOTION and not square.rect.collidepoint(event.pos):
                     return False
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    playNavigate()
                     cover_instructions(screen, instructionsTextBoxEscape)
                     cover_instructions(screen, instructionsTextBoxClick)
                     return None
@@ -382,6 +384,7 @@ def run_choose_board_location(ship, otherShipCoords, playerName):
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN:
+                    playNavigate()
                     if event.key == pygame.K_ESCAPE:
                         cover_instructions(screen, instructionsTextBoxRotate)
                         cover_instructions(screen, instructionsTextBoxEnter)
@@ -422,6 +425,7 @@ def run_choose_board_location(ship, otherShipCoords, playerName):
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
+                    playNavigate()
                     return None
                 elif event.type == MOUSEMOTION:
                     hoveredSquare = get_hovered_square(event.pos, initialBoard)
@@ -471,7 +475,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
     player2 = Player(shipCoords2, "AI")
     state = State(player1, player2)
 
-    
+
 
 
     def generate_sunk_ship_alert(shipLength):
@@ -505,6 +509,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    playNavigate()
                     # black the screen
                     screen.fill((0, 0, 0))
                     # display the instructions to switch turns
@@ -586,7 +591,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 aiGuessedText = TextBox("Guess: {}".format((y,x)))
                 pygame.display.flip()
                 pygame.time.delay(1500)
-                
+
 
             else:
                 pass
@@ -649,6 +654,7 @@ def run_game_loop(shipCoords1, shipCoords2):
                     pygame.quit()
                     sys.exit()
                 elif event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
+                    playNavigate()
                     # black the screen
                     screen.fill((0, 0, 0))
                     # display the instructions to switch turns

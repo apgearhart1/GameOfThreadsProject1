@@ -18,8 +18,8 @@ def run():
             print("aiShips", aiShips)
             player1ships = gui_states.run_place_ships(num, "Player 1")
 
-            # these next two lines of code will need to me modified
-            winnerName = gui_states.run_game_loop(player1ships, aiShips)
+            # these next two lines of code will need to be modified
+            winnerName = gui_states.run_ai_game_loop(player1ships, aiShips, aiDifficulty)
             play_again = gui_states.winner_screen_prompt_replay(winnerName)
         else:
             player1ships = gui_states.run_place_ships(num, "Player 1")

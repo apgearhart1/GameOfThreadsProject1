@@ -3,6 +3,9 @@ from gui_classes import Scoreboard
 
 score_tracker = Scoreboard()
 
+with open('score_file.txt', 'r+') as s_file:
+    s_file_contents = s_file.readlines()
+    score_tracker.set_scores_from_file(s_file_contents[0], s_file_contents[1], s_file_contents[2])
 
 def run():
     """
@@ -25,6 +28,7 @@ def run():
             winnerName = gui_states.run_ai_game_loop(player1ships, aiShips, aiDifficulty)
             score_tracker.update_win_score(winnerName)
             play_again = gui_states.winner_screen_prompt_replay(winnerName)
+
         else:
             player1ships = gui_states.run_place_ships(num, "Player 1")
             player2ships = gui_states.run_place_ships(num, "Player 2")

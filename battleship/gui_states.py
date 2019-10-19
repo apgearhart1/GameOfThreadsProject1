@@ -20,6 +20,18 @@ def playNavigate():
     navigate = pygame.mixer.Sound('../sounds/navigate.wav')
     navigate.play()
 
+def playMiss():
+    miss = pygame.mixer.Sound('../sounds/miss.wav')
+    miss.play()
+
+def playHit():
+    hit = pygame.mixer.Sound('../sounds/hit.wav')
+    hit.play()
+
+def playSink():
+    explosion = pygame.mixer.Sound('../sounds/explosion.wav')
+    explosion.play()
+
 def run_start():
     """
     This procedure draws the background battleship image and prompts the player to hit the space bar to play.
@@ -335,7 +347,6 @@ def run_choose_board_location(ship, otherShipCoords, playerName):
             pygame.display.flip()
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN and square.rect.collidepoint(event.pos):
-                    #Dawson Note
                     playNavigate()
                     return True
                 elif event.type == pygame.MOUSEMOTION and not square.rect.collidepoint(event.pos):
@@ -481,6 +492,8 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
 
 
     def generate_sunk_ship_alert(shipLength):
+        #PLAY SUNK SHIP EXPLOSION SOUND
+        playSink()
         return TextBox("You sunk the other player's {}".format(ship_length_to_name(shipLength)), (SCREEN_WIDTH / 4, SCREEN_HEIGHT * (9 / 10)), textcolor=colors['GREEN'])
 
     def produce_guess_board():
@@ -493,7 +506,6 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN and square.rect.collidepoint(event.pos):
-                    #Dawson Note
                     playNavigate()
                     return square.grid_coord
                 elif event.type == pygame.MOUSEMOTION and not square.rect.collidepoint(event.pos):
@@ -574,6 +586,8 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                             pygame.draw.rect(screen, colors['BLACK'], guessInstructionsTextBox.rect)
                             pygame.draw.rect(screen, colors['BLACK'], whosTurnTextBox.rect)
                             if hit(guess, state.player2.ships):
+                                #PLAY HIT SOUND
+                                playHit()
                                 highlight(screen, hoveredSquare, colors['GREEN'])
                                 screen.blit(hitTextBox.surface, hitTextBox.rect)
                                 sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
@@ -588,6 +602,8 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                                         screen.fill(colors['BLACK'])
                                         return state.player2.name
                             else:
+                                #PLAY MISS SOUND
+                                playMiss()
                                 highlight(screen, hoveredSquare, colors['RED'])
                                 screen.blit(missTextBox.surface, missTextBox.rect)
                                 state.update(guess)
@@ -669,7 +685,6 @@ def run_game_loop(shipCoords1, shipCoords2):
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONDOWN and square.rect.collidepoint(event.pos):
                     playNavigate()
-                    #Dawson Note
                     return square.grid_coord
                 elif event.type == pygame.MOUSEMOTION and not square.rect.collidepoint(event.pos):
                     return None
@@ -725,6 +740,8 @@ def run_game_loop(shipCoords1, shipCoords2):
                         pygame.draw.rect(screen, colors['BLACK'], guessInstructionsTextBox.rect)
                         pygame.draw.rect(screen, colors['BLACK'], whosTurnTextBox.rect)
                         if hit(guess, state.player2.ships):
+                            #PLAY HIT SOUND
+                            playHit()
                             highlight(screen, hoveredSquare, colors['GREEN'])
                             screen.blit(hitTextBox.surface, hitTextBox.rect)
                             sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
@@ -739,6 +756,8 @@ def run_game_loop(shipCoords1, shipCoords2):
                                     screen.fill(colors['BLACK'])
                                     return state.player2.name
                         else:
+                            #PLAY MISS SOUND
+                            playMiss()
                             highlight(screen, hoveredSquare, colors['RED'])
                             screen.blit(missTextBox.surface, missTextBox.rect)
                             state.update(guess)

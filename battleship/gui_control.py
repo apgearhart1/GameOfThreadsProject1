@@ -5,12 +5,12 @@ from gui_classes import Scoreboard
 score_tracker = Scoreboard()
 
 # File I/O object for reading/writing player and ai score to file to store between game instances
-with open('score_file.txt', 'r+') as s_file:
-    s_file_contents = s_file.readlines()
-    p1_data = int(s_file_contents[0])
-    p2_data = int(s_file_contents[1])
-    ai_data = int(s_file_contents[2])
-    score_tracker.set_scores_from_file(p1_data, p2_data, ai_data)
+s_file = open('score_file.txt', 'r+')
+s_file_contents = s_file.readlines()
+p1_data = int(s_file_contents[0])
+p2_data = int(s_file_contents[1])
+ai_data = int(s_file_contents[2])
+score_tracker.set_scores_from_file(p1_data, p2_data, ai_data)
 
 # Overwrite existing score file with updated scores
 def write_scores(score_file):
@@ -25,6 +25,7 @@ def reset_file(score_file):
     score_file.write("0\n")
     score_file.write("0\n")
     score_file.write("0\n")
+
 
 def run():
     """
@@ -62,5 +63,8 @@ def run():
                 write_scores(s_file)
             else:
                 reset_file(s_file)
+            # test scoreboard by printing to terminal
+            score_tracker.print_2v2_score()
 
 run()
+s_file.close()

@@ -254,7 +254,6 @@ class Scoreboard:
         if winner == "AI":
             self.ai_score = self.ai_score + 1
 
-
     def get_p1_wins(self):
         return self.p1_score
 

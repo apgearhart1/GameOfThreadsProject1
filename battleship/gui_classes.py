@@ -55,6 +55,7 @@ class Player:
         self.ships = ships
         self.guesses = []
         self.name = name
+        
 
     def add_guess(self, coord):
         """
@@ -63,7 +64,7 @@ class Player:
         :return: void
         """
         self.guesses.append(coord)
-    
+
     def get_name(self):
         """
         Return the name of the player

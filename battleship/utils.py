@@ -15,7 +15,7 @@ colors = {
 
 
 SCREEN_WIDTH = 1200
-SCREEN_HEIGHT = 900
+SCREEN_HEIGHT = 825
 
 
 def flatten(ls):

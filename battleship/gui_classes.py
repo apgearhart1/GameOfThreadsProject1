@@ -267,3 +267,13 @@ class Scoreboard:
         self.p1_score = p1
         self.p2_score = p2
         self.ai_score = ai
+
+    def print_2v2_score(self):
+        print("Player 1 score: ", self.p1_score, "\n")
+        print("Player 2 score: ", self.p2_score, "\n")
+
+    def print_1vai_score(self):
+        print("Player 1 score: ", self.p1_score, "\n")
+        print("AI score: ", self.ai_score, "\n")
+
+

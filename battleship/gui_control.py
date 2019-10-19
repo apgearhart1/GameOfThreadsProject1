@@ -64,7 +64,7 @@ def run():
             else:
                 reset_file(s_file)
             # test scoreboard by printing to terminal
-            score_tracker.print_2v2_score()
+            score_tracker.print_pvp_score()
 
 run()
 s_file.close()

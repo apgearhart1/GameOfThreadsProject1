@@ -4,7 +4,7 @@ from gui_classes import Scoreboard
 # Global scoreboard object
 score_tracker = Scoreboard()
 
-# File I/O object for holding player and ai score between game instances
+# File I/O object for reading/writing player and ai score to file to store between game instances
 with open('score_file.txt', 'r+') as s_file:
     s_file_contents = s_file.readlines()
     p1_data = int(s_file_contents[0])
@@ -47,6 +47,10 @@ def run():
             winnerName = gui_states.run_ai_game_loop(player1ships, aiShips, aiDifficulty)
             score_tracker.update_win_score(winnerName)
             play_again = gui_states.winner_screen_prompt_replay(winnerName)
+         if (play_again):
+           write_scores(s_file)
+         else:
+            reset_file(s_file)
 
         else:
             player1ships = gui_states.run_place_ships(num, "Player 1")
@@ -54,5 +58,9 @@ def run():
             winnerName = gui_states.run_game_loop(player1ships, player2ships)
             score_tracker.update_win_score(winnerName)
             play_again = gui_states.winner_screen_prompt_replay(winnerName)
+            if (play_again):
+                write_scores(s_file)
+            else:
+                reset_file(s_file)
 
 run()

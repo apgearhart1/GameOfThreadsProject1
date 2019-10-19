@@ -249,7 +249,7 @@ class Scoreboard:
     def update_win_score(self, winner):
         if winner == "Player 1":
             self.p1_score = self.p1_score + 1
-        if winner == "Player 1":
+        if winner == "Player 2":
             self.p2_score = self.p2_score + 1
         if winner == "AI":
             self.ai_score = self.ai_score + 1

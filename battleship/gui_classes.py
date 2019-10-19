@@ -239,19 +239,31 @@ class Ship(pygame.sprite.Sprite):
         self.surface = pygame.Surface((self.squareWidth, self.squareHeight * self.length))
         self.rect = self.surface.fill(self.color).move(self.window_coord[0], self.window_coord[1])
 
-class Scoreboard: 
-	def __init__(self):
-		self.p1_score = 0;
-		self.p2_score = 0;
+class Scoreboard:
+    def __init__(self):
+        self.p1_score = 0
+        self.p2_score = 0
+        self.ai_score = 0
 
-	def update_win_score(self, winner):
-		if winner == "player1":
-			self.p1_score = self.p1_score + 1
-		if winner == "player2":
-			self.p2_score = self.p2_score + 1
-			
-	def get_p1_wins(self):
-		return self.p1_score
-			
-	def get_p2_wins(self):
-		return self.p2_score
+    def update_win_score(self, winner):
+        if winner == "Player 1":
+            self.p1_score = self.p1_score + 1
+        if winner == "Player 1":
+            self.p2_score = self.p2_score + 1
+        if winner == "AI":
+            self.ai_score = self.ai_score + 1
+
+
+    def get_p1_wins(self):
+        return self.p1_score
+
+    def get_p2_wins(self):
+        return self.p2_score
+
+    def get_ai_wins(self):
+        return self.ai_score
+
+    def set_scores_from_file(self, p1, p2, ai):
+        self.p1_score = p1
+        self.p2_score = p2
+        self.ai_score = ai

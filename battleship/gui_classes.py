@@ -250,11 +250,11 @@ class Scoreboard:
         self.ai_score = 0
 
     def update_win_score(self, winner):
-    """
-    This function updates a player's score when they win
-    :param winner: string - name of the player that won
-    :return: void
-    """
+        """
+        This function updates a player's score when they win
+        :param winner: string - name of the player that won
+        :return: void
+        """
         if winner == "Player 1":
             self.p1_score = self.p1_score + 1
         if winner == "Player 2":
@@ -263,54 +263,54 @@ class Scoreboard:
             self.ai_score = self.ai_score + 1
 
     def get_p1_wins(self):
-    """
-    This function gets player 1's wins
-    :param self: used to access member variable
-    :return: int - player 1's win's
-    """
+        """
+        This function gets player 1's wins
+        :param self: used to access member variable
+        :return: int - player 1's win's
+        """
         return self.p1_score
 
     def get_p2_wins(self):
-    """
-    This function gets player 2's wins
-    :param self: used to access member variable
-    :return: int - player 2's win's
-    """
+        """
+        This function gets player 2's wins
+        :param self: used to access member variable
+        :return: int - player 2's win's
+        """
         return self.p2_score
 
     def get_ai_wins(self):
-    """
-    This function gets ai's wins
-    :param self: used to access member variable
-    :return: int - ai's win's
-    """
+        """
+        This function gets ai's wins
+        :param self: used to access member variable
+        :return: int - ai's win's
+        """
         return self.ai_score
 
     def set_scores_from_file(self, p1, p2, ai):
-    """
-    This function initializes all 3 scores
-    :param self: used to access member variable
-    :return: void
-    """
+        """
+        This function initializes all 3 scores
+        :param self: used to access member variable
+        :return: void
+        """
         self.p1_score = p1
         self.p2_score = p2
         self.ai_score = ai
 
     def print_pvp_score(self):
-    """
-    This function print's the scores of players 1 and 2
-    :param self: used to access member variable
-    :return: void
-    """
+        """
+        This function print's the scores of players 1 and 2
+        :param self: used to access member variable
+        :return: void
+        """
         print("Player 1 score: ", self.p1_score, "\n")
         print("Player 2 score: ", self.p2_score, "\n")
 
     def print_1vai_score(self):
-    """
-    This function print's the scores of player 1 and the ai 
-    :param self: used to access member variable
-    :return: void
-    """
+        """
+        This function print's the scores of player 1 and the ai 
+        :param self: used to access member variable
+        :return: void
+        """
         print("Player 1 score: ", self.p1_score, "\n")
         print("AI score: ", self.ai_score, "\n")
 

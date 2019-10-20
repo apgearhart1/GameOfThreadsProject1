@@ -487,8 +487,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
 
     hits = []
     
-
-
+    spotsToHit = shipCoords1
 
     def generate_sunk_ship_alert(shipLength):
         #PLAY SUNK SHIP EXPLOSION SOUND
@@ -580,8 +579,8 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     if (hoveredSquare is not None) and (hoveredSquare.grid_coord not in state.player1.guesses):
                         highlight(screen, hoveredSquare, colors['YELLOW'])
                         guess = wait_for_click_guess(hoveredSquare)
-                        print("Human Guess:", guess)
                         if guess is not None:
+                            print("Human Guess:", guess)
                             pygame.draw.rect(screen, colors['BLACK'], guessInstructionsTextBox.rect)
                             pygame.draw.rect(screen, colors['BLACK'], whosTurnTextBox.rect)
                             if hit(guess, state.player2.ships):
@@ -614,11 +613,29 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
             pygame.display.flip()
             pygame.time.delay(30)
         else:
+            guess = 0
             if aiDifficulty == 1:
                 x = random.randint(1, 8)
                 y = random.randint(1, 8)
-                print("AI Guess:", (y, x))
-                state.update((y, x))
+                guess = (y, x)
+                print("AI Guess:", guess)
+                #state.update((y, x))
+                if guess in flatten(state.player2.ships):
+                    print("in hit")
+                    sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
+                    state.update(guess)
+                    if sunkenShipLength is not None:
+                        sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
+                        screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
+                        pygame.display.flip()
+                        if state.is_game_over():
+                            pygame.display.flip()
+                            pygame.time.delay(2000)
+                            screen.fill(colors['BLACK'])
+                            return state.player2.name
+                else:
+                    state.update(guess)
+                    
             elif aiDifficulty == 2:
                 x = random.randint(1, 8)
                 y = random.randint(1, 8)
@@ -638,12 +655,19 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 pygame.display.flip()
                 pygame.time.delay(1500)
 
-
             else:
-                pass
-    
-  
+                randShipNum = random.randint(0, len(spotsToHit) - 1)
+                singlShip = spotsToHit[randShipNum]
+                randSpotNum = random.randint(0, len(singlShip) - 1)
+                singleSpot = singlShip[randSpotNum]
+                guess = singleSpot
+                print("AI Guess:", (y, x))
+                state.update(spotsToHit)
+                spotsToHit[randShipNum].remove(singleSpot)
 
+                if len(flatten(spotsToHit)) == 0:
+                    screen.fill(colors['BLACK'])
+                    return state.player2.name
 
 # the main game loop
 # takes 2 args: player1 and player2

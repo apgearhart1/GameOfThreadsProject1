@@ -27,7 +27,7 @@ try:
     p1_data = int(s_file_contents[0])
     p2_data = int(s_file_contents[1])
     ai_data = int(s_file_contents[2])
-except ValueError:
+except:
     reset_file(s_file)
     s_file.seek(0)
     new_contents = s_file.readlines()

@@ -888,10 +888,10 @@ def run_game_loop(shipCoords1, shipCoords2):
                                     screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
                                     pygame.display.flip()
                                     if(sunkenShipLength == 1):
-                                    if(not p1):
-                                        tripleShotP1 = True
-                                    else:
-                                        tripleShotP2 = True
+                                        if(not p1):
+                                            tripleShotP1 = True
+                                        else:
+                                            tripleShotP2 = True
                                     if state.is_game_over():
                                         pygame.display.flip()
                                         pygame.time.delay(2000)

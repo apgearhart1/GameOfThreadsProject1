@@ -541,13 +541,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 return arr
             if (ay+1, ax) in shipCoords1:
                 arr.append((ay+1, ax))
-<<<<<<< HEAD
                 med_ai_traverse(ax, ay+1, shipCoords1, arr, sunkenShipLength)
-        
-=======
-                med_ai_traverse(ax, ay+1, shipCoords1, arr)
-
->>>>>>> be83e9c628853dff3743fd5323ef990c77568c1e
             if (ay, ax+1) in shipCoords1:
                 arr.append((ay, ax+1))
                 med_ai_traverse(ax+1, ay, shipCoords1, arr, sunkenShipLength)
@@ -694,10 +688,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 randSpotNum = random.randint(0, len(singleShip) - 1)
                 singleSpot = singleShip[randSpotNum]
                 guess = singleSpot
-<<<<<<< HEAD
-=======
                 #print("AI Guess:", (y, x))
->>>>>>> be83e9c628853dff3743fd5323ef990c77568c1e
                 state.update(spotsToHit)
                 print()
                 print(randShipNum)

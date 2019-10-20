@@ -47,7 +47,7 @@ def run():
             
             winnerName = gui_states.run_ai_game_loop(player1ships, aiShips, aiDifficulty)
             score_tracker.update_win_score(winnerName)
-            play_again = gui_states.winner_screen_prompt_replay(winnerName)
+            play_again = gui_states.winner_screen_prompt_replay(winnerName, True, score_tracker)
             if (play_again):
                 write_scores(s_file)
             else:
@@ -58,7 +58,7 @@ def run():
             player2ships = gui_states.run_place_ships(num, "Player 2")
             winnerName = gui_states.run_game_loop(player1ships, player2ships)
             score_tracker.update_win_score(winnerName)
-            play_again = gui_states.winner_screen_prompt_replay(winnerName)
+            play_again = gui_states.winner_screen_prompt_replay(winnerName, False, score_tracker)
             if (play_again):
                 write_scores(s_file)
             else:

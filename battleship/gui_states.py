@@ -850,6 +850,7 @@ def run_game_loop(shipCoords1, shipCoords2):
                                 screen.blit(hitTextBox.surface, hitTextBox.rect)
                                 sunkenShipLength = which_sunk(tuple(map(operator.add, guess, (0, 1))), state.player1.guesses, state.player2.ships)
                                 state.update(tuple(map(operator.add, guess, (0, 1))), True)
+                                p1 = not p1
                                 if sunkenShipLength is not None:
                                     sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
                                     screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
@@ -863,6 +864,7 @@ def run_game_loop(shipCoords1, shipCoords2):
                                 highlight(screen, hoveredSquare3, colors['RED'])
                                 screen.blit(missTextBox.surface, missTextBox.rect)
                                 state.update(tuple(map(operator.add, guess, (0, 1))), True)
+                                p1 = not p1
                             pygame.display.flip()
                             pygame.time.delay(1500)
                             if run_switch_turns():
@@ -883,6 +885,7 @@ def run_game_loop(shipCoords1, shipCoords2):
                                 screen.blit(hitTextBox.surface, hitTextBox.rect)
                                 sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
                                 state.update(guess)
+                                p1 = not p1
                                 if sunkenShipLength is not None:
                                     sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
                                     screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
@@ -903,6 +906,7 @@ def run_game_loop(shipCoords1, shipCoords2):
                                 highlight(screen, hoveredSquare, colors['RED'])
                                 screen.blit(missTextBox.surface, missTextBox.rect)
                                 state.update(guess)
+                                p1 = not p1
                             pygame.display.flip()
                             pygame.time.delay(1500)
                             if run_switch_turns():

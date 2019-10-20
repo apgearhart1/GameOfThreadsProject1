@@ -257,10 +257,11 @@ def highlight(surface, obj, color):
     :param color: an RGB tuple
     :return: void
     """
-    obj.surface.fill(color)
-    obj.rect = obj.surface.get_rect(x=obj.window_coord[0], y=obj.window_coord[1])
-    surface.blit(obj.surface, obj.rect)
-    pygame.display.update(obj)
+    if obj is not None:
+        obj.surface.fill(color)
+        obj.rect = obj.surface.get_rect(x=obj.window_coord[0], y=obj.window_coord[1])
+        surface.blit(obj.surface, obj.rect)
+        pygame.display.update(obj)
 
 
 def get_intersect_object_from_list(pos, ls):

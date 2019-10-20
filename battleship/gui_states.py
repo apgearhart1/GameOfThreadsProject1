@@ -535,25 +535,30 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     return None
             pygame.time.delay(30)
 
-    def med_ai_traverse(ax, ay, shipCoords1, arr):
+    def med_ai_traverse(ax, ay, shipCoords1, arr, sunkenShipLength):
         if ay+1 < 9 and ax+1 < 9 and ay-1 > 0 and ax-1 > 0:
-            if (ay+1, ax) not in shipCoords1 and (ay-1, ax) not in shipCoords1 and (ay, ax+1) not in shipCoords1 and (ay, ax-1) not in shipCoords1:
+            if len(arr) == sunkenShipLength:
                 return arr
             if (ay+1, ax) in shipCoords1:
                 arr.append((ay+1, ax))
+<<<<<<< HEAD
+                med_ai_traverse(ax, ay+1, shipCoords1, arr, sunkenShipLength)
+        
+=======
                 med_ai_traverse(ax, ay+1, shipCoords1, arr)
 
+>>>>>>> be83e9c628853dff3743fd5323ef990c77568c1e
             if (ay, ax+1) in shipCoords1:
                 arr.append((ay, ax+1))
-                med_ai_traverse(ax+1, ay, shipCoords1, arr)
+                med_ai_traverse(ax+1, ay, shipCoords1, arr, sunkenShipLength)
 
             if (ay-1, ax) in shipCoords1:
                 arr.append((ay-1, ax))
-                med_ai_traverse(ax, ay-1, shipCoords1, arr)
+                med_ai_traverse(ax, ay-1, shipCoords1, arr, sunkenShipLength)
 
             if (ay, ax-1) in shipCoords1:
                 arr.append((ay, ax-1))
-                med_ai_traverse(ax-1, ay, shipCoords1, arr)
+                med_ai_traverse(ax-1, ay, shipCoords1, arr, sunkenShipLength)
             else:
                 return
 
@@ -673,7 +678,8 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     ay = y
                     ct = 1
                     arr = [(ay,ax)]
-                    listOfHitsInTurn = med_ai_traverse(ax, ay, flatten(state.player2.ships), arr)
+                    sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
+                    listOfHitsInTurn = med_ai_traverse(ax, ay, flatten(state.player2.ships), arr, sunkenShipLength)
                     hits.append(listOfHitsInTurn)
                     state.update(listOfHitsInTurn)
                 else:
@@ -688,7 +694,10 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 randSpotNum = random.randint(0, len(singleShip) - 1)
                 singleSpot = singleShip[randSpotNum]
                 guess = singleSpot
+<<<<<<< HEAD
+=======
                 #print("AI Guess:", (y, x))
+>>>>>>> be83e9c628853dff3743fd5323ef990c77568c1e
                 state.update(spotsToHit)
                 print()
                 print(randShipNum)

@@ -14,6 +14,11 @@ score_tracker.set_scores_from_file(p1_data, p2_data, ai_data)
 
 # Overwrite existing score file with updated scores
 def write_scores(score_file):
+    """
+    This is a function for writing scores to file, player 1 is line 1, player 2 is line 2, and ai is line 3
+    :param score_file: a file/io object for writing scores to score_file.txt
+    :return: void
+    """
     score_file.seek(0)
     score_file.write(str(score_tracker.get_p1_wins) + "\n")
     score_file.write(str(score_tracker.get_p2_wins) + "\n")
@@ -21,6 +26,11 @@ def write_scores(score_file):
 
 # Set scores in file to 0s
 def reset_file(score_file):
+    """
+    This function resets the scores in the file to 0s
+    :param score_file: a file/io object for writing scores to score_file.txt
+    :return: void
+    """
     score_file.seek(0)
     score_file.write("0\n")
     score_file.write("0\n")

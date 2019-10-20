@@ -9,7 +9,9 @@ from functools import reduce
 import random
 import operator
 
-tripleShot = True
+tripleShotP1 = False
+tripleShotP2 = False
+
 pygame.init()
 pygame.display.set_caption("Battleship")
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -713,6 +715,9 @@ def run_game_loop(shipCoords1, shipCoords2):
     :param shipCoords2: a list of lists of coordinates corresponding to the second player's chosen ship locations.
     :return: string - the name of the player who won (either "Player 1" or "Player 2")
     """
+    tripleShotP1 = False
+    tripleShotP2 = False
+    p1 = True
     pygame.mixer.music.stop()
     pygame.mixer.music.load('../sounds/gameplay.mp3')
     pygame.mixer.music.play(-1)
@@ -790,7 +795,7 @@ def run_game_loop(shipCoords1, shipCoords2):
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEMOTION:
-                if(tripleShot):
+                if((tripleShotP1 and p1) or (tripleShotP2 and not p1)):
                     hoveredSquare = get_hovered_square(event.pos, initialGuessBoard)
                     hoveredSquare2 = get_hovered_square((event.pos[0] - 60, event.pos[1]), initialGuessBoard)
                     hoveredSquare3 = get_hovered_square((event.pos[0] + 60, event.pos[1]), initialGuessBoard)
@@ -882,6 +887,11 @@ def run_game_loop(shipCoords1, shipCoords2):
                                     sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
                                     screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
                                     pygame.display.flip()
+                                    if(sunkenShipLength == 1):
+                                    if(not p1):
+                                        tripleShotP1 = True
+                                    else:
+                                        tripleShotP2 = True
                                     if state.is_game_over():
                                         pygame.display.flip()
                                         pygame.time.delay(2000)

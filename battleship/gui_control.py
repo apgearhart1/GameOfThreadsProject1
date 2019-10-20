@@ -4,12 +4,37 @@ from gui_classes import Scoreboard
 # Global scoreboard object
 score_tracker = Scoreboard()
 
+# Set scores in file to 0s
+def reset_file(score_file):
+    """
+    This function resets the scores in the file to 0s
+    :param score_file: a file/io object for writing scores to score_file.txt
+    :return: void
+    """
+    score_file.seek(0)
+    score_file.write("0\n")
+    score_file.write("0\n")
+    score_file.write("0\n")
+
 # File I/O object for reading/writing player and ai score to file to store between game instances
 s_file = open('score_file.txt', 'r+')
 s_file_contents = s_file.readlines()
-p1_data = int(s_file_contents[0])
-p2_data = int(s_file_contents[1])
-ai_data = int(s_file_contents[2])
+p1_data = 0
+p2_data = 0
+ai_data = 0
+
+try:
+    p1_data = int(s_file_contents[0])
+    p2_data = int(s_file_contents[1])
+    ai_data = int(s_file_contents[2])
+except ValueError:
+    reset_file(s_file)
+    s_file.seek(0)
+    new_contents = s_file.readlines()
+    p1_data = int(new_contents[0])
+    p2_data = int(new_contents[1])
+    ai_data = int(new_contents[2])
+
 score_tracker.set_scores_from_file(p1_data, p2_data, ai_data)
 
 # Overwrite existing score file with updated scores
@@ -23,19 +48,6 @@ def write_scores(score_file):
     score_file.write(str(score_tracker.get_p1_wins) + "\n")
     score_file.write(str(score_tracker.get_p2_wins) + "\n")
     score_file.write(str(score_tracker.get_ai_wins) + "\n")
-
-# Set scores in file to 0s
-def reset_file(score_file):
-    """
-    This function resets the scores in the file to 0s
-    :param score_file: a file/io object for writing scores to score_file.txt
-    :return: void
-    """
-    score_file.seek(0)
-    score_file.write("0\n")
-    score_file.write("0\n")
-    score_file.write("0\n")
-
 
 def run():
     """

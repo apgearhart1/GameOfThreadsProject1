@@ -21,14 +21,15 @@ class State:
         self.player2 = player2
         self.iterations = 0
 
-    def update(self, guess):
+    def update(self, guess, switch = True):
         """
         Updates the state based by adding the guess and "flipping" the players.
         :param guess: a coordinate
         :return: void
         """
         self.player1.add_guess(guess)
-        self.player2, self.player1 = self.player1, self.player2
+        if(switch):
+            self.player2, self.player1 = self.player1, self.player2
         self.iterations += 1
 
     def is_game_over(self):

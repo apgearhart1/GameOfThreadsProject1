@@ -7,7 +7,9 @@ import pygame
 from pygame.locals import *
 from functools import reduce
 import random
+import operator
 
+tripleShot = True
 pygame.init()
 pygame.display.set_caption("Battleship")
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -773,40 +775,114 @@ def run_game_loop(shipCoords1, shipCoords2):
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEMOTION:
-                hoveredSquare = get_hovered_square(event.pos, initialGuessBoard)
-                if (hoveredSquare is not None) and (hoveredSquare.grid_coord not in state.player1.guesses):
-                    highlight(screen, hoveredSquare, colors['YELLOW'])
-                    guess = wait_for_click_guess(hoveredSquare)
-                    if guess is not None:
-                        pygame.draw.rect(screen, colors['BLACK'], guessInstructionsTextBox.rect)
-                        pygame.draw.rect(screen, colors['BLACK'], whosTurnTextBox.rect)
-                        if hit(guess, state.player2.ships):
-                            #PLAY HIT SOUND
-                            playHit()
-                            highlight(screen, hoveredSquare, colors['GREEN'])
-                            screen.blit(hitTextBox.surface, hitTextBox.rect)
-                            sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
-                            state.update(guess)
-                            if sunkenShipLength is not None:
-                                sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
-                                screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
-                                pygame.display.flip()
-                                if state.is_game_over():
+                if(tripleShot):
+                    hoveredSquare = get_hovered_square(event.pos, initialGuessBoard)
+                    hoveredSquare2 = get_hovered_square((event.pos[0] - 60, event.pos[1]), initialGuessBoard)
+                    hoveredSquare3 = get_hovered_square((event.pos[0] + 60, event.pos[1]), initialGuessBoard)
+                    if (hoveredSquare2 is not None) and (hoveredSquare2.grid_coord not in state.player1.guesses):
+                            highlight(screen, hoveredSquare2, colors['YELLOW'])
+                    if (hoveredSquare3 is not None) and (hoveredSquare3.grid_coord not in state.player1.guesses):
+                            highlight(screen, hoveredSquare3, colors['YELLOW'])
+                    if (hoveredSquare is not None) and (hoveredSquare.grid_coord not in state.player1.guesses):
+                        highlight(screen, hoveredSquare, colors['YELLOW'])
+                        guess = wait_for_click_guess(hoveredSquare)
+                        if guess is not None:
+                            pygame.draw.rect(screen, colors['BLACK'], guessInstructionsTextBox.rect)
+                            pygame.draw.rect(screen, colors['BLACK'], whosTurnTextBox.rect)
+                            if hit(guess, state.player2.ships):
+                                highlight(screen, hoveredSquare, colors['GREEN'])
+                                screen.blit(hitTextBox.surface, hitTextBox.rect)
+                                sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
+                                state.update(guess, False)
+                                if sunkenShipLength is not None:
+                                    sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
+                                    screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
                                     pygame.display.flip()
-                                    pygame.time.delay(2000)
-                                    screen.fill(colors['BLACK'])
-                                    return state.player2.name
-                        else:
-                            #PLAY MISS SOUND
-                            playMiss()
-                            highlight(screen, hoveredSquare, colors['RED'])
-                            screen.blit(missTextBox.surface, missTextBox.rect)
-                            state.update(guess)
-                        pygame.display.flip()
-                        pygame.time.delay(1500)
-                        if run_switch_turns():
-                            screen.fill(colors['BLACK'])
-                            break
+                                    if state.is_game_over():
+                                        pygame.display.flip()
+                                        pygame.time.delay(2000)
+                                        screen.fill(colors['BLACK'])
+                                        return state.player2.name
+                            else:
+                                highlight(screen, hoveredSquare, colors['RED'])
+                                screen.blit(missTextBox.surface, missTextBox.rect)
+                                state.update(guess, False)
+                            if hit(tuple(map(operator.add, guess, (0, -1))), state.player2.ships):
+                                highlight(screen, hoveredSquare2, colors['GREEN'])
+                                screen.blit(hitTextBox.surface, hitTextBox.rect)
+                                sunkenShipLength = which_sunk(tuple(map(operator.add, guess, (0, -1))), state.player1.guesses, state.player2.ships)
+                                state.update(tuple(map(operator.add, guess, (0, -1))), False)
+                                if sunkenShipLength is not None:
+                                    sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
+                                    screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
+                                    pygame.display.flip()
+                                    if state.is_game_over():
+                                        pygame.display.flip()
+                                        pygame.time.delay(2000)
+                                        screen.fill(colors['BLACK'])
+                                        return state.player2.name
+                            else:
+                                highlight(screen, hoveredSquare2, colors['RED'])
+                                screen.blit(missTextBox.surface, missTextBox.rect)
+                                state.update(tuple(map(operator.add, guess, (0, -1))), False)
+                            if hit(tuple(map(operator.add, guess, (0, 1))), state.player2.ships):
+                                highlight(screen, hoveredSquare3, colors['GREEN'])
+                                screen.blit(hitTextBox.surface, hitTextBox.rect)
+                                sunkenShipLength = which_sunk(tuple(map(operator.add, guess, (0, 1))), state.player1.guesses, state.player2.ships)
+                                state.update(tuple(map(operator.add, guess, (0, 1))), True)
+                                if sunkenShipLength is not None:
+                                    sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
+                                    screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
+                                    pygame.display.flip()
+                                    if state.is_game_over():
+                                        pygame.display.flip()
+                                        pygame.time.delay(2000)
+                                        screen.fill(colors['BLACK'])
+                                        return state.player2.name
+                            else:
+                                highlight(screen, hoveredSquare3, colors['RED'])
+                                screen.blit(missTextBox.surface, missTextBox.rect)
+                                state.update(tuple(map(operator.add, guess, (0, 1))), True)
+                            pygame.display.flip()
+                            pygame.time.delay(1500)
+                            if run_switch_turns():
+                                screen.fill(colors['BLACK'])
+                                break
+                else:
+                    hoveredSquare = get_hovered_square(event.pos, initialGuessBoard)
+                    if (hoveredSquare is not None) and (hoveredSquare.grid_coord not in state.player1.guesses):
+                        highlight(screen, hoveredSquare, colors['YELLOW'])
+                        guess = wait_for_click_guess(hoveredSquare)
+                        if guess is not None:
+                            pygame.draw.rect(screen, colors['BLACK'], guessInstructionsTextBox.rect)
+                            pygame.draw.rect(screen, colors['BLACK'], whosTurnTextBox.rect)
+                            if hit(guess, state.player2.ships):
+                                #PLAY HIT SOUND
+                                playHit()
+                                highlight(screen, hoveredSquare, colors['GREEN'])
+                                screen.blit(hitTextBox.surface, hitTextBox.rect)
+                                sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
+                                state.update(guess)
+                                if sunkenShipLength is not None:
+                                    sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
+                                    screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
+                                    pygame.display.flip()
+                                    if state.is_game_over():
+                                        pygame.display.flip()
+                                        pygame.time.delay(2000)
+                                        screen.fill(colors['BLACK'])
+                                        return state.player2.name
+                            else:
+                                #PLAY MISS SOUND
+                                playMiss()
+                                highlight(screen, hoveredSquare, colors['RED'])
+                                screen.blit(missTextBox.surface, missTextBox.rect)
+                                state.update(guess)
+                            pygame.display.flip()
+                            pygame.time.delay(1500)
+                            if run_switch_turns():
+                                screen.fill(colors['BLACK'])
+                                break
         pygame.display.flip()
         pygame.time.delay(30)
 

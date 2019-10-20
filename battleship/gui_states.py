@@ -7,7 +7,9 @@ import pygame
 from pygame.locals import *
 from functools import reduce
 import random
+import operator
 
+tripleShot = True
 pygame.init()
 pygame.display.set_caption("Battleship")
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))

@@ -18,18 +18,30 @@ imageBattleshipSurface = pygame.image.load('battleship-1200x900.jpg').convert()
 blackBackground = pygame.Surface((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 def playNavigate():
+    """
+    This plays the "navigate" sound effect for clicking boxes and pressing keys
+    """
     navigate = pygame.mixer.Sound('../sounds/navigate.wav')
     navigate.play()
 
 def playMiss():
+    """
+    This plays the "miss" sound effect for clicking on a square that does NOT contain a ship
+    """
     miss = pygame.mixer.Sound('../sounds/miss.wav')
     miss.play()
 
 def playHit():
+    """
+    This plays the "hit" sound effect for clicking on a square that DOES contain a ship
+    """
     hit = pygame.mixer.Sound('../sounds/hit.wav')
     hit.play()
 
 def playSink():
+    """
+    This plays the "explosion" sound effect for clicking on the final square of a ship (sinking the ship)
+    """
     explosion = pygame.mixer.Sound('../sounds/explosion.wav')
     explosion.play()
 
@@ -214,7 +226,7 @@ def run_place_ai_ships(numShips):
             for i in individualCoordinates:
                 if i in flatten(coordinates):
                     isBadPlacement = True
-                    
+
         coordinates.append(individualCoordinates)
         shipToPlace = shipToPlace - 1
 
@@ -497,7 +509,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
     state = State(player1, player2)
 
     hits = []
-    
+
     spotsToHit = shipCoords1
 
     def generate_sunk_ship_alert(shipLength):
@@ -521,29 +533,34 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     return None
             pygame.time.delay(30)
 
-    def med_ai_traverse(ax, ay, shipCoords1, arr):
+    def med_ai_traverse(ax, ay, shipCoords1, arr, sunkenShipLength):
         if ay+1 < 9 and ax+1 < 9 and ay-1 > 0 and ax-1 > 0:
-            if (ay+1, ax) not in shipCoords1 and (ay-1, ax) not in shipCoords1 and (ay, ax+1) not in shipCoords1 and (ay, ax-1) not in shipCoords1:
+            if len(arr) == sunkenShipLength:
                 return arr
             if (ay+1, ax) in shipCoords1:
                 arr.append((ay+1, ax))
-                med_ai_traverse(ax, ay+1, shipCoords1, arr)
+<<<<<<< HEAD
+                med_ai_traverse(ax, ay+1, shipCoords1, arr, sunkenShipLength)
         
+=======
+                med_ai_traverse(ax, ay+1, shipCoords1, arr)
+
+>>>>>>> be83e9c628853dff3743fd5323ef990c77568c1e
             if (ay, ax+1) in shipCoords1:
                 arr.append((ay, ax+1))
-                med_ai_traverse(ax+1, ay, shipCoords1, arr)
+                med_ai_traverse(ax+1, ay, shipCoords1, arr, sunkenShipLength)
 
             if (ay-1, ax) in shipCoords1:
                 arr.append((ay-1, ax))
-                med_ai_traverse(ax, ay-1, shipCoords1, arr)
+                med_ai_traverse(ax, ay-1, shipCoords1, arr, sunkenShipLength)
 
             if (ay, ax-1) in shipCoords1:
                 arr.append((ay, ax-1))
-                med_ai_traverse(ax-1, ay, shipCoords1, arr)
+                med_ai_traverse(ax-1, ay, shipCoords1, arr, sunkenShipLength)
             else:
                 return
 
-        
+
 
     def run_switch_turns():
         # display switch turns instruction message
@@ -648,7 +665,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                             return state.player2.name
                 else:
                     state.update(guess)
-                    
+
             elif aiDifficulty == 2:
                 x = random.randint(1, 8)
                 y = random.randint(1, 8)
@@ -659,7 +676,8 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     ay = y
                     ct = 1
                     arr = [(ay,ax)]
-                    listOfHitsInTurn = med_ai_traverse(ax, ay, flatten(state.player2.ships), arr)
+                    sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
+                    listOfHitsInTurn = med_ai_traverse(ax, ay, flatten(state.player2.ships), arr, sunkenShipLength)
                     hits.append(listOfHitsInTurn)
                     state.update(listOfHitsInTurn)
                 else:
@@ -675,9 +693,9 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 singleSpot = singleShip[randSpotNum]
                 guess = singleSpot
 <<<<<<< HEAD
-                #print("AI Guess:", (y, x))
 =======
->>>>>>> 76d20e3bf430ae5ffc3790831481ef930605f236
+                #print("AI Guess:", (y, x))
+>>>>>>> be83e9c628853dff3743fd5323ef990c77568c1e
                 state.update(spotsToHit)
                 print()
                 print(randShipNum)
@@ -915,10 +933,10 @@ def winner_screen_prompt_replay(winnerName, isAI, win_score):
     noBox = TextBox("NO", ((SCREEN_WIDTH * (2 / 3)) - (128 * (2 / 3)), SCREEN_HEIGHT * (3 / 4)), fontsize=128, textcolor=colors['RED'])
 
     if isAI:
-        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "    AI Score: " + str(win_score.get_ai_wins()), 
+        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "    AI Score: " + str(win_score.get_ai_wins()),
                             (45, 150), fontsize=90, textcolor=colors['BLUE'])
     else:
-        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "    Player 2 Score: " + str(win_score.get_p2_wins()), 
+        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "    Player 2 Score: " + str(win_score.get_p2_wins()),
                             (45, 150), fontsize=90, textcolor=colors['BLUE'])
 
     blit_objects(screen, [winnerTextBox, playAgainTextBox, yesBox, noBox, scoreBox])

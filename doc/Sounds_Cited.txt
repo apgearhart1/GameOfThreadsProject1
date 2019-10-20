@@ -1,0 +1,26 @@
+Sources used for royalty free sounds and songs
+
+----------
+
+Songs:
+"The White" by Rolemusic (file titled as gameplay.mp3) from the album The Black Dot
+Downloaded from Free Music Archive.org
+
+"Omou matsu" by Rolemusic (file titled as intro.mp3)
+Downloaded from Free Music Archive.org
+
+"Towel Defence Jingle Win" by sawsquarenoise (file titled as win.mp3) from the album Towel Defence OST
+Downloaded from Free Music Archive.org
+
+----------
+
+Sound Effects:
+"hit" by Dawson Frick (file titled as hit.wav)
+
+"miss" by Dawson Frick (file titled as miss.wav)
+
+"Explosion_01" by LittleRobotSoundFacotry (file titled as explosion.wav)
+Downloaded from FreeSound.org
+
+"Menu_Navigate_00" by LittleRobotSoundFacotry (file titled as navigate.wav)
+Downloaded from FreeSound.org

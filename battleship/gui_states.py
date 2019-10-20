@@ -791,13 +791,13 @@ def winner_screen_prompt_replay(winnerName, isAI, win_score):
     noBox = TextBox("NO", ((SCREEN_WIDTH * (2 / 3)) - (128 * (2 / 3)), SCREEN_HEIGHT * (3 / 4)), fontsize=128, textcolor=colors['RED'])
 
     if isAI:
-        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "        AI Score: " + str(win_score.get_ai_wins()), 
-                            (SCREEN_WIDTH/2 - (96 * (2 / 3)), SCREEN_HEIGHT * (3 / 4)), fontsize=96, textcolor=colors['BLUE'])
+        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "    AI Score: " + str(win_score.get_ai_wins()), 
+                            (45, 150), fontsize=90, textcolor=colors['BLUE'])
     else:
-        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "  Player 2 Score: " + str(win_score.get_p2_wins()), 
-                            (80, 150), fontsize=96, textcolor=colors['BLUE'])
+        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "    Player 2 Score: " + str(win_score.get_p2_wins()), 
+                            (45, 150), fontsize=90, textcolor=colors['BLUE'])
 
-    blit_objects(screen, [winnerTextBox, playAgainTextBox, yesBox, noBox,scoreBox])
+    blit_objects(screen, [winnerTextBox, playAgainTextBox, yesBox, noBox, scoreBox])
     pygame.display.flip()
     # wait for click
 
@@ -807,7 +807,7 @@ def winner_screen_prompt_replay(winnerName, isAI, win_score):
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEBUTTONDOWN:
-                clickedOnBox = get_intersect_object_from_list(event.pos, [yesBox, noBox, scoreBox])
+                clickedOnBox = get_intersect_object_from_list(event.pos, [yesBox, noBox])
                 if clickedOnBox is not None:
                     playNavigate()
                     screen.fill(colors['BLACK'])

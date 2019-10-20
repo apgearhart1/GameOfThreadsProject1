@@ -191,19 +191,28 @@ def run_place_ai_ships(numShips):
     for index in range(0, numShips):
 
         individualCoordinates = []
+        isBadPlacement = True
 
-        startX = random.randint(1, 8 - shipToPlace)
-        startY = random.randint(1, 8 - shipToPlace)
+        while isBadPlacement:
 
-        verticalOrHorizontal = random.randint(1, 2) # 1 -> vertical, 2 -> horizontal
+            startX = random.randint(1, 8 - shipToPlace)
+            startY = random.randint(1, 8 - shipToPlace)
 
-        if verticalOrHorizontal == 1:
-            for i in range(0, shipToPlace):
-                individualCoordinates.append((startY + i, startX))
-        else:
-            for i in range(0, shipToPlace):
-                individualCoordinates.append((startY, startX + i))
+            verticalOrHorizontal = random.randint(1, 2) # 1 -> vertical, 2 -> horizontal
 
+            if verticalOrHorizontal == 1:
+                for i in range(0, shipToPlace):
+                    individualCoordinates.append((startY + i, startX))
+            else:
+                for i in range(0, shipToPlace):
+                    individualCoordinates.append((startY, startX + i))
+
+            isBadPlacement = False
+
+            for i in individualCoordinates:
+                if i in flatten(coordinates):
+                    isBadPlacement = True
+                    
         coordinates.append(individualCoordinates)
         shipToPlace = shipToPlace - 1
 
@@ -657,13 +666,22 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
 
             else:
                 randShipNum = random.randint(0, len(spotsToHit) - 1)
-                singlShip = spotsToHit[randShipNum]
-                randSpotNum = random.randint(0, len(singlShip) - 1)
-                singleSpot = singlShip[randSpotNum]
+                singleShip = spotsToHit[randShipNum]
+                randSpotNum = random.randint(0, len(singleShip) - 1)
+                singleSpot = singleShip[randSpotNum]
                 guess = singleSpot
-                print("AI Guess:", (y, x))
                 state.update(spotsToHit)
+                print()
+                print(randShipNum)
+                print(singleShip)
+                print(randSpotNum)
+                print(singleSpot)
+                print(guess)
+                print(spotsToHit)
                 spotsToHit[randShipNum].remove(singleSpot)
+                if len(spotsToHit[randShipNum]) == 0:
+                    spotsToHit.remove([])
+                print(spotsToHit)
 
                 if len(flatten(spotsToHit)) == 0:
                     screen.fill(colors['BLACK'])

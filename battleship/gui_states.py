@@ -1,7 +1,7 @@
 
 from utils import colors, SCREEN_WIDTH, SCREEN_HEIGHT
 from gui_functions import *
-from gui_classes import State, Player, BoardSquare, Board, TextBox, Ship
+from gui_classes import State, Player, BoardSquare, Board, TextBox, Ship, Scoreboard
 import sys
 import pygame
 from pygame.locals import *
@@ -770,10 +770,12 @@ def run_game_loop(shipCoords1, shipCoords2):
 
 
 # returns a boolean indicating whether or not to play again
-def winner_screen_prompt_replay(winnerName):
+def winner_screen_prompt_replay(winnerName, isAI, win_score):
     """
     This is a display screen procedure that displays the game's winner and prompts the user to click whether or not to play again.
     :param winnerName: string - the name of the game's winner
+    :param isAI: bool - true if game is player vs ai, false when game is player vs player
+    :param win_score: Scoreboard - the scoreboard for the game
     :return: bool - represents whether or not to play again
     """
     pygame.mixer.music.stop()
@@ -787,7 +789,15 @@ def winner_screen_prompt_replay(winnerName):
     # display the 'Yes' and 'No' boxes
     yesBox = TextBox("YES", ((SCREEN_WIDTH / 3) - (128 * (2 / 3)), SCREEN_HEIGHT * (3 / 4)), fontsize=128, textcolor=colors['GREEN'])
     noBox = TextBox("NO", ((SCREEN_WIDTH * (2 / 3)) - (128 * (2 / 3)), SCREEN_HEIGHT * (3 / 4)), fontsize=128, textcolor=colors['RED'])
-    blit_objects(screen, [winnerTextBox, playAgainTextBox, yesBox, noBox])
+
+    if isAI:
+        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "        AI Score: " + str(win_score.get_ai_wins()), 
+                            (SCREEN_WIDTH/2 - (96 * (2 / 3)), SCREEN_HEIGHT * (3 / 4)), fontsize=96, textcolor=colors['BLUE'])
+    else:
+        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "  Player 2 Score: " + str(win_score.get_p2_wins()), 
+                            (80, 150), fontsize=96, textcolor=colors['BLUE'])
+
+    blit_objects(screen, [winnerTextBox, playAgainTextBox, yesBox, noBox,scoreBox])
     pygame.display.flip()
     # wait for click
 
@@ -797,7 +807,7 @@ def winner_screen_prompt_replay(winnerName):
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEBUTTONDOWN:
-                clickedOnBox = get_intersect_object_from_list(event.pos, [yesBox, noBox])
+                clickedOnBox = get_intersect_object_from_list(event.pos, [yesBox, noBox, scoreBox])
                 if clickedOnBox is not None:
                     playNavigate()
                     screen.fill(colors['BLACK'])

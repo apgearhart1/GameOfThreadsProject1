@@ -7,7 +7,9 @@ import pygame
 from pygame.locals import *
 from functools import reduce
 import random
+import operator
 
+tripleShot = True
 pygame.init()
 pygame.display.set_caption("Battleship")
 screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -191,19 +193,28 @@ def run_place_ai_ships(numShips):
     for index in range(0, numShips):
 
         individualCoordinates = []
+        isBadPlacement = True
 
-        startX = random.randint(1, 8 - shipToPlace)
-        startY = random.randint(1, 8 - shipToPlace)
+        while isBadPlacement:
 
-        verticalOrHorizontal = random.randint(1, 2) # 1 -> vertical, 2 -> horizontal
+            startX = random.randint(1, 8 - shipToPlace)
+            startY = random.randint(1, 8 - shipToPlace)
 
-        if verticalOrHorizontal == 1:
-            for i in range(0, shipToPlace):
-                individualCoordinates.append((startY + i, startX))
-        else:
-            for i in range(0, shipToPlace):
-                individualCoordinates.append((startY, startX + i))
+            verticalOrHorizontal = random.randint(1, 2) # 1 -> vertical, 2 -> horizontal
 
+            if verticalOrHorizontal == 1:
+                for i in range(0, shipToPlace):
+                    individualCoordinates.append((startY + i, startX))
+            else:
+                for i in range(0, shipToPlace):
+                    individualCoordinates.append((startY, startX + i))
+
+            isBadPlacement = False
+
+            for i in individualCoordinates:
+                if i in flatten(coordinates):
+                    isBadPlacement = True
+                    
         coordinates.append(individualCoordinates)
         shipToPlace = shipToPlace - 1
 
@@ -659,13 +670,26 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
 
             else:
                 randShipNum = random.randint(0, len(spotsToHit) - 1)
-                singlShip = spotsToHit[randShipNum]
-                randSpotNum = random.randint(0, len(singlShip) - 1)
-                singleSpot = singlShip[randSpotNum]
+                singleShip = spotsToHit[randShipNum]
+                randSpotNum = random.randint(0, len(singleShip) - 1)
+                singleSpot = singleShip[randSpotNum]
                 guess = singleSpot
+<<<<<<< HEAD
                 #print("AI Guess:", (y, x))
+=======
+>>>>>>> 76d20e3bf430ae5ffc3790831481ef930605f236
                 state.update(spotsToHit)
+                print()
+                print(randShipNum)
+                print(singleShip)
+                print(randSpotNum)
+                print(singleSpot)
+                print(guess)
+                print(spotsToHit)
                 spotsToHit[randShipNum].remove(singleSpot)
+                if len(spotsToHit[randShipNum]) == 0:
+                    spotsToHit.remove([])
+                print(spotsToHit)
 
                 if len(flatten(spotsToHit)) == 0:
                     screen.fill(colors['BLACK'])
@@ -757,40 +781,114 @@ def run_game_loop(shipCoords1, shipCoords2):
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEMOTION:
-                hoveredSquare = get_hovered_square(event.pos, initialGuessBoard)
-                if (hoveredSquare is not None) and (hoveredSquare.grid_coord not in state.player1.guesses):
-                    highlight(screen, hoveredSquare, colors['YELLOW'])
-                    guess = wait_for_click_guess(hoveredSquare)
-                    if guess is not None:
-                        pygame.draw.rect(screen, colors['BLACK'], guessInstructionsTextBox.rect)
-                        pygame.draw.rect(screen, colors['BLACK'], whosTurnTextBox.rect)
-                        if hit(guess, state.player2.ships):
-                            #PLAY HIT SOUND
-                            playHit()
-                            highlight(screen, hoveredSquare, colors['GREEN'])
-                            screen.blit(hitTextBox.surface, hitTextBox.rect)
-                            sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
-                            state.update(guess)
-                            if sunkenShipLength is not None:
-                                sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
-                                screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
-                                pygame.display.flip()
-                                if state.is_game_over():
+                if(tripleShot):
+                    hoveredSquare = get_hovered_square(event.pos, initialGuessBoard)
+                    hoveredSquare2 = get_hovered_square((event.pos[0] - 60, event.pos[1]), initialGuessBoard)
+                    hoveredSquare3 = get_hovered_square((event.pos[0] + 60, event.pos[1]), initialGuessBoard)
+                    if (hoveredSquare2 is not None) and (hoveredSquare2.grid_coord not in state.player1.guesses):
+                            highlight(screen, hoveredSquare2, colors['YELLOW'])
+                    if (hoveredSquare3 is not None) and (hoveredSquare3.grid_coord not in state.player1.guesses):
+                            highlight(screen, hoveredSquare3, colors['YELLOW'])
+                    if (hoveredSquare is not None) and (hoveredSquare.grid_coord not in state.player1.guesses):
+                        highlight(screen, hoveredSquare, colors['YELLOW'])
+                        guess = wait_for_click_guess(hoveredSquare)
+                        if guess is not None:
+                            pygame.draw.rect(screen, colors['BLACK'], guessInstructionsTextBox.rect)
+                            pygame.draw.rect(screen, colors['BLACK'], whosTurnTextBox.rect)
+                            if hit(guess, state.player2.ships):
+                                highlight(screen, hoveredSquare, colors['GREEN'])
+                                screen.blit(hitTextBox.surface, hitTextBox.rect)
+                                sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
+                                state.update(guess, False)
+                                if sunkenShipLength is not None:
+                                    sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
+                                    screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
                                     pygame.display.flip()
-                                    pygame.time.delay(2000)
-                                    screen.fill(colors['BLACK'])
-                                    return state.player2.name
-                        else:
-                            #PLAY MISS SOUND
-                            playMiss()
-                            highlight(screen, hoveredSquare, colors['RED'])
-                            screen.blit(missTextBox.surface, missTextBox.rect)
-                            state.update(guess)
-                        pygame.display.flip()
-                        pygame.time.delay(1500)
-                        if run_switch_turns():
-                            screen.fill(colors['BLACK'])
-                            break
+                                    if state.is_game_over():
+                                        pygame.display.flip()
+                                        pygame.time.delay(2000)
+                                        screen.fill(colors['BLACK'])
+                                        return state.player2.name
+                            else:
+                                highlight(screen, hoveredSquare, colors['RED'])
+                                screen.blit(missTextBox.surface, missTextBox.rect)
+                                state.update(guess, False)
+                            if hit(tuple(map(operator.add, guess, (0, -1))), state.player2.ships):
+                                highlight(screen, hoveredSquare2, colors['GREEN'])
+                                screen.blit(hitTextBox.surface, hitTextBox.rect)
+                                sunkenShipLength = which_sunk(tuple(map(operator.add, guess, (0, -1))), state.player1.guesses, state.player2.ships)
+                                state.update(tuple(map(operator.add, guess, (0, -1))), False)
+                                if sunkenShipLength is not None:
+                                    sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
+                                    screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
+                                    pygame.display.flip()
+                                    if state.is_game_over():
+                                        pygame.display.flip()
+                                        pygame.time.delay(2000)
+                                        screen.fill(colors['BLACK'])
+                                        return state.player2.name
+                            else:
+                                highlight(screen, hoveredSquare2, colors['RED'])
+                                screen.blit(missTextBox.surface, missTextBox.rect)
+                                state.update(tuple(map(operator.add, guess, (0, -1))), False)
+                            if hit(tuple(map(operator.add, guess, (0, 1))), state.player2.ships):
+                                highlight(screen, hoveredSquare3, colors['GREEN'])
+                                screen.blit(hitTextBox.surface, hitTextBox.rect)
+                                sunkenShipLength = which_sunk(tuple(map(operator.add, guess, (0, 1))), state.player1.guesses, state.player2.ships)
+                                state.update(tuple(map(operator.add, guess, (0, 1))), True)
+                                if sunkenShipLength is not None:
+                                    sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
+                                    screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
+                                    pygame.display.flip()
+                                    if state.is_game_over():
+                                        pygame.display.flip()
+                                        pygame.time.delay(2000)
+                                        screen.fill(colors['BLACK'])
+                                        return state.player2.name
+                            else:
+                                highlight(screen, hoveredSquare3, colors['RED'])
+                                screen.blit(missTextBox.surface, missTextBox.rect)
+                                state.update(tuple(map(operator.add, guess, (0, 1))), True)
+                            pygame.display.flip()
+                            pygame.time.delay(1500)
+                            if run_switch_turns():
+                                screen.fill(colors['BLACK'])
+                                break
+                else:
+                    hoveredSquare = get_hovered_square(event.pos, initialGuessBoard)
+                    if (hoveredSquare is not None) and (hoveredSquare.grid_coord not in state.player1.guesses):
+                        highlight(screen, hoveredSquare, colors['YELLOW'])
+                        guess = wait_for_click_guess(hoveredSquare)
+                        if guess is not None:
+                            pygame.draw.rect(screen, colors['BLACK'], guessInstructionsTextBox.rect)
+                            pygame.draw.rect(screen, colors['BLACK'], whosTurnTextBox.rect)
+                            if hit(guess, state.player2.ships):
+                                #PLAY HIT SOUND
+                                playHit()
+                                highlight(screen, hoveredSquare, colors['GREEN'])
+                                screen.blit(hitTextBox.surface, hitTextBox.rect)
+                                sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
+                                state.update(guess)
+                                if sunkenShipLength is not None:
+                                    sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
+                                    screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
+                                    pygame.display.flip()
+                                    if state.is_game_over():
+                                        pygame.display.flip()
+                                        pygame.time.delay(2000)
+                                        screen.fill(colors['BLACK'])
+                                        return state.player2.name
+                            else:
+                                #PLAY MISS SOUND
+                                playMiss()
+                                highlight(screen, hoveredSquare, colors['RED'])
+                                screen.blit(missTextBox.surface, missTextBox.rect)
+                                state.update(guess)
+                            pygame.display.flip()
+                            pygame.time.delay(1500)
+                            if run_switch_turns():
+                                screen.fill(colors['BLACK'])
+                                break
         pygame.display.flip()
         pygame.time.delay(30)
 
@@ -817,13 +915,13 @@ def winner_screen_prompt_replay(winnerName, isAI, win_score):
     noBox = TextBox("NO", ((SCREEN_WIDTH * (2 / 3)) - (128 * (2 / 3)), SCREEN_HEIGHT * (3 / 4)), fontsize=128, textcolor=colors['RED'])
 
     if isAI:
-        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "        AI Score: " + str(win_score.get_ai_wins()), 
-                            (SCREEN_WIDTH/2 - (96 * (2 / 3)), SCREEN_HEIGHT * (3 / 4)), fontsize=96, textcolor=colors['BLUE'])
+        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "    AI Score: " + str(win_score.get_ai_wins()), 
+                            (45, 150), fontsize=90, textcolor=colors['BLUE'])
     else:
-        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "  Player 2 Score: " + str(win_score.get_p2_wins()), 
-                            (80, 150), fontsize=96, textcolor=colors['BLUE'])
+        scoreBox = TextBox("Player 1 Score: " + str(win_score.get_p1_wins()) + "    Player 2 Score: " + str(win_score.get_p2_wins()), 
+                            (45, 150), fontsize=90, textcolor=colors['BLUE'])
 
-    blit_objects(screen, [winnerTextBox, playAgainTextBox, yesBox, noBox,scoreBox])
+    blit_objects(screen, [winnerTextBox, playAgainTextBox, yesBox, noBox, scoreBox])
     pygame.display.flip()
     # wait for click
 
@@ -833,7 +931,7 @@ def winner_screen_prompt_replay(winnerName, isAI, win_score):
                 pygame.quit()
                 sys.exit()
             elif event.type == MOUSEBUTTONDOWN:
-                clickedOnBox = get_intersect_object_from_list(event.pos, [yesBox, noBox, scoreBox])
+                clickedOnBox = get_intersect_object_from_list(event.pos, [yesBox, noBox])
                 if clickedOnBox is not None:
                     playNavigate()
                     screen.fill(colors['BLACK'])

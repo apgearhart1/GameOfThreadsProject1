@@ -542,6 +542,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
             if (ay+1, ax) in shipCoords1:
                 arr.append((ay+1, ax))
                 med_ai_traverse(ax, ay+1, shipCoords1, arr, sunkenShipLength)
+        
             if (ay, ax+1) in shipCoords1:
                 arr.append((ay, ax+1))
                 med_ai_traverse(ax+1, ay, shipCoords1, arr, sunkenShipLength)
@@ -679,7 +680,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 else:
                     state.update((y,x))
                 aiGuessedText = TextBox("Guess: {}".format((y,x)))
-                #pygame.display.flip()
+                pygame.display.flip()
                 pygame.time.delay(1500)
 
             else:
@@ -688,7 +689,6 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 randSpotNum = random.randint(0, len(singleShip) - 1)
                 singleSpot = singleShip[randSpotNum]
                 guess = singleSpot
-                #print("AI Guess:", (y, x))
                 state.update(spotsToHit)
                 print()
                 print(randShipNum)

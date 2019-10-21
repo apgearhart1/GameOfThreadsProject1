@@ -537,8 +537,9 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
             pygame.time.delay(30)
 
     def checkDestroyed(arr):
-        for i in state.player2.ships:
-            if arr.sort() == i.sort():
+        for i in state.player1.ships:
+            print("check destroyed of", arr, " to ", i)
+            if sorted(arr) == sorted(i):
                 return True
         return False
 
@@ -548,31 +549,30 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
             
             if checkDestroyed(arr):
                 print("leaving function")
-                print("s", sunkenShipLength)
                 print(arr)
                 return arr
             if (ay-1, ax) in shipCoords1 and (ay-1, ax) not in state.player1.guesses:
                 print("Going up")
                 arr.append((ay-1, ax))
                 state.update((ay-1, ax))
-                return med_ai_traverse(ax, ay-1, shipCoords1, arr)
+                med_ai_traverse(ax, ay-1, shipCoords1, arr)
             if (ay, ax+1) in shipCoords1 and (ay, ax+1) not in state.player1.guesses:
                 print("Going right")
                 arr.append((ay, ax+1))
                 state.update((ay, ax+1))
-                return med_ai_traverse(ax+1, ay, shipCoords1, arr)
+                med_ai_traverse(ax+1, ay, shipCoords1, arr)
 
             if (ay+1, ax) in shipCoords1 and (ay+1, ax) not in state.player1.guesses:
                 print("Going down")
                 arr.append((ay+1, ax))
                 state.update((ay+1, ax))
-                return med_ai_traverse(ax, ay+1, shipCoords1, arr)
+                med_ai_traverse(ax, ay+1, shipCoords1, arr)
 
             if (ay, ax-1) in shipCoords1 and (ay, ax-1) not in state.player1.guesses:
                 print("Going left")
                 arr.append((ay, ax-1))
                 state.update((ay, ax-1))
-                return med_ai_traverse(ax-1, ay, shipCoords1, arr)
+                med_ai_traverse(ax-1, ay, shipCoords1, arr)
 
             else:
                 print("Going back to the original anchor")
@@ -692,6 +692,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     y = random.randint(1, 8)
                 print("AI Guess:", (y, x))
                 print(state.player1.name)
+                print("SHIPS", state.player2.ships)
                 if (y,x) in flatten(state.player2.ships) and (y,x) not in hits:
                     ax = x
                     ay = y

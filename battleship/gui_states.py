@@ -536,47 +536,46 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     return None
             pygame.time.delay(30)
 
-    def checkDestroyed(arr):
-        for i in state.player1.ships:
+    def checkDestroyed(arr, shipCoords1):
+        for i in shipCoords1:
             print("check destroyed of", arr, " to ", i)
             if sorted(arr) == sorted(i):
                 return True
         return False
 
     def med_ai_traverse(ax, ay, shipCoords1, arr):
-        if ay+1 < 9 and ax+1 < 9 and ay-1 > 0 and ax-1 > 0:
-            guess = (ay,ax)
-            
-            if checkDestroyed(arr):
-                print("leaving function")
-                print(arr)
-                return arr
-            if (ay-1, ax) in shipCoords1 and (ay-1, ax) not in state.player1.guesses:
-                print("Going up")
-                arr.append((ay-1, ax))
-                state.update((ay-1, ax))
-                med_ai_traverse(ax, ay-1, shipCoords1, arr)
-            if (ay, ax+1) in shipCoords1 and (ay, ax+1) not in state.player1.guesses:
-                print("Going right")
-                arr.append((ay, ax+1))
-                state.update((ay, ax+1))
-                med_ai_traverse(ax+1, ay, shipCoords1, arr)
+        guess = (ay,ax)
+        print(shipCoords1)
+        if checkDestroyed(arr, shipCoords1):
+            print("leaving function")
+            print(arr)
+            return arr
+        elif (ay-1, ax) in shipCoords1 and (ay-1, ax) not in state.player2.guesses and ay-1 > 0:
+            print("Going up")
+            arr.append((ay-1, ax))
+            state.update((ay-1, ax))
+            med_ai_traverse(ax, ay-1, shipCoords1, arr)
+        elif (ay, ax+1) in shipCoords1 and (ay, ax+1) not in state.player2.guesses and ax+1 < 9:
+            print("Going right")
+            arr.append((ay, ax+1))
+            state.update((ay, ax+1))
+            med_ai_traverse(ax+1, ay, shipCoords1, arr)
 
-            if (ay+1, ax) in shipCoords1 and (ay+1, ax) not in state.player1.guesses:
-                print("Going down")
-                arr.append((ay+1, ax))
-                state.update((ay+1, ax))
-                med_ai_traverse(ax, ay+1, shipCoords1, arr)
+        elif (ay+1, ax) in shipCoords1 and (ay+1, ax) not in state.player2.guesses and ay+1 < 9:
+            print("Going down")
+            arr.append((ay+1, ax))
+            state.update((ay+1, ax))
+            med_ai_traverse(ax, ay+1, shipCoords1, arr)
 
-            if (ay, ax-1) in shipCoords1 and (ay, ax-1) not in state.player1.guesses:
-                print("Going left")
-                arr.append((ay, ax-1))
-                state.update((ay, ax-1))
-                med_ai_traverse(ax-1, ay, shipCoords1, arr)
+        elif (ay, ax-1) in shipCoords1 and (ay, ax-1) not in state.player2.guesses and ax-1 > 0:
+            print("Going left")
+            arr.append((ay, ax-1))
+            state.update((ay, ax-1))
+            med_ai_traverse(ax-1, ay, shipCoords1, arr)
 
-            else:
-                print("Going back to the original anchor")
-                return med_ai_traverse(arr[0][1], arr[0][0], shipCoords1, arr) #arr[0][0,1] is the original hit point
+        else:
+            print("Going back to the original anchor")
+            return med_ai_traverse(arr[0][1], arr[0][0], shipCoords1, arr) #arr[0][0,1] is the original hit point
 
 
 
@@ -692,24 +691,25 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     y = random.randint(1, 8)
                 print("AI Guess:", (y, x))
                 print(state.player1.name)
-                print("SHIPS", state.player2.ships)
+                print("MY SHIPS", state.player2.ships)
                 if (y,x) in flatten(state.player2.ships) and (y,x) not in hits:
                     ax = x
                     ay = y
                     state.update((ay,ax))
                     hits.append((ay,ax))
                     arr = [(ay,ax)]
-                    sunkenShipLength = which_sunk((ay,ax), state.player1.guesses, state.player2.ships)
+                    #sunkenShipLength = which_sunk((ay,ax), state.player1.guesses, state.player2.ships)
                     
-                    if sunkenShipLength is not 1:
-                        listOfHitsInTurn = med_ai_traverse(ax, ay, flatten(state.player2.ships), arr)
-                        hits.append(listOfHitsInTurn) #add the list of hits from recursive function to hits and guesses
-                        state.update(listOfHitsInTurn)
-                        if state.is_game_over():
-                            pygame.display.flip()
-                            pygame.time.delay(2000)
-                            screen.fill(colors['BLACK'])
-                            return state.player2.name
+                    
+                    print("true")
+                    listOfHitsInTurn = med_ai_traverse(ax, ay, flatten(state.player2.ships), arr)
+                    hits.append(listOfHitsInTurn) #add the list of hits from recursive function to hits and guesses
+                    state.update(listOfHitsInTurn)
+                    if state.is_game_over():
+                        pygame.display.flip()
+                        pygame.time.delay(2000)
+                        screen.fill(colors['BLACK'])
+                        return state.player2.name
                 else:
                     state.update((y,x))
                 aiGuessedText = TextBox("Guess: {}".format((y,x)))

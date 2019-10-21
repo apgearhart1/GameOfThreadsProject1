@@ -511,6 +511,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
     state = State(player1, player2)
 
     hits = []
+    guesses = []
 
     spotsToHit = shipCoords1
 
@@ -539,21 +540,21 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
         if ay+1 < 9 and ax+1 < 9 and ay-1 > 0 and ax-1 > 0:
             if len(arr) == sunkenShipLength:
                 return arr
-            if (ay+1, ax) in shipCoords1:
-                arr.append((ay+1, ax))
-                med_ai_traverse(ax, ay+1, shipCoords1, arr, sunkenShipLength)
-        
-            if (ay, ax+1) in shipCoords1:
+            if (ay-1, ax) in shipCoords1 and (ay-1, ax) not in arr and (ay-1, ax) not in state.player1.guesses:
+                arr.append((ay-1, ax))
+                med_ai_traverse(ax, ay-1, shipCoords1, arr, sunkenShipLength)
+            if (ay, ax+1) in shipCoords1 and (ay, ax+1) not in arr and (ay, ax+1) not in state.player1.guesses:
                 arr.append((ay, ax+1))
                 med_ai_traverse(ax+1, ay, shipCoords1, arr, sunkenShipLength)
 
-            if (ay-1, ax) in shipCoords1:
-                arr.append((ay-1, ax))
-                med_ai_traverse(ax, ay-1, shipCoords1, arr, sunkenShipLength)
-
-            if (ay, ax-1) in shipCoords1:
+            if (ay+1, ax) in shipCoords1 and (ay+1, ax) not in arr and (ay+1, ax) not in state.player1.guesses:
+                arr.append((ay+1, ax))
+                med_ai_traverse(ax, ay+1, shipCoords1, arr, sunkenShipLength)
+        
+            if (ay, ax-1) in shipCoords1 and (ay, ax-1) not in arr and (ay, ax-1) not in state.player1.guesses:
                 arr.append((ay, ax-1))
                 med_ai_traverse(ax-1, ay, shipCoords1, arr, sunkenShipLength)
+
             else:
                 return
 
@@ -666,6 +667,9 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
             elif aiDifficulty == 2:
                 x = random.randint(1, 8)
                 y = random.randint(1, 8)
+                while (y,x) in state.player1.guesses:
+                    x = random.randint(1, 8)
+                    y = random.randint(1, 8)
                 print("AI Guess:", (y, x))
                 print(state.player1.name)
                 if (y,x) in flatten(state.player2.ships) and (y,x) not in hits:
@@ -674,9 +678,13 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     ct = 1
                     arr = [(ay,ax)]
                     sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
-                    listOfHitsInTurn = med_ai_traverse(ax, ay, flatten(state.player2.ships), arr, sunkenShipLength)
-                    hits.append(listOfHitsInTurn)
-                    state.update(listOfHitsInTurn)
+                    if sunkenShipLength == 1:
+                        hits.append(arr[0])
+                        state.update(arr[0])
+                    else:
+                        listOfHitsInTurn = med_ai_traverse(ax, ay, flatten(state.player2.ships), arr, sunkenShipLength)
+                        hits.append(listOfHitsInTurn)
+                        state.update(listOfHitsInTurn)
                 else:
                     state.update((y,x))
                 aiGuessedText = TextBox("Guess: {}".format((y,x)))

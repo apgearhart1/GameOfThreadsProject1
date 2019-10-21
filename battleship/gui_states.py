@@ -538,9 +538,12 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
 
     def med_ai_traverse(ax, ay, shipCoords1, arr):
         if ay+1 < 9 and ax+1 < 9 and ay-1 > 0 and ax-1 > 0:
-            sunkenShipLength = which_sunk((ay, ax), state.player1.guesses, state.player2.ships)
-            if sunkenShipLength is not None:
+            guess = (ay,ax)
+            sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
+            if sunkenShipLength is not None and sunkenShipLength is not 1:
                 print("leaving function")
+                print("s", sunkenShipLength)
+                print(arr)
                 return arr
             if (ay-1, ax) in shipCoords1 and (ay-1, ax) not in arr and (ay-1, ax) not in state.player1.guesses:
                 print("Going up")
@@ -567,7 +570,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
 
             else:
                 print("Going back to the original anchor")
-                med_ai_traverse(arr[0][1], arr[0][0], shipCoords1, arr)
+                return med_ai_traverse(arr[0][1], arr[0][0], shipCoords1, arr) #arr[0][0,1] is the original hit point
 
 
 
@@ -689,12 +692,12 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     state.update((ay,ax))
                     hits.append((ay,ax))
                     arr = [(ay,ax)]
-                    sunkenShipLength = which_sunk(guess, state.player1.guesses, state.player2.ships)
+                    sunkenShipLength = which_sunk((ay,ax), state.player1.guesses, state.player2.ships)
                     
-                    if sunkenShipLength is not None and sunkenShipLength is not 1:
+                    if sunkenShipLength is not 1:
                         listOfHitsInTurn = med_ai_traverse(ax, ay, flatten(state.player2.ships), arr)
-                        hits.append(listOfHitsInTurn[1:])
-                        state.update(listOfHitsInTurn[1:])
+                        hits.append(listOfHitsInTurn) #add the list of hits from recursive function to hits and guesses
+                        state.update(listOfHitsInTurn)
                         if state.is_game_over():
                             pygame.display.flip()
                             pygame.time.delay(2000)

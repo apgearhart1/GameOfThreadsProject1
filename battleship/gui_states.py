@@ -554,7 +554,7 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                 arr.append((ay+1, ax))
                 state.update((ay+1, ax))
                 med_ai_traverse(ax, ay+1, shipCoords1, arr)
-        
+
             if (ay, ax-1) in shipCoords1 and (ay, ax-1) not in arr and (ay, ax-1) not in state.player1.guesses:
                 arr.append((ay, ax-1))
                 state.update((ay, ax-1))
@@ -699,7 +699,6 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     state.update((y,x))
                 aiGuessedText = TextBox("Guess: {}".format((y,x)))
                 pygame.display.flip()
-                pygame.time.delay(1500)
 
             else:
                 randShipNum = random.randint(0, len(spotsToHit) - 1)

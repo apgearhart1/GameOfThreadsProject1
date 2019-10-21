@@ -536,27 +536,32 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     return None
             pygame.time.delay(30)
 
-    def med_ai_traverse(ax, ay, shipCoords1, arr, sunkenShipLength):
+    def med_ai_traverse(ax, ay, shipCoords1, arr):
         if ay+1 < 9 and ax+1 < 9 and ay-1 > 0 and ax-1 > 0:
-            if len(arr) == sunkenShipLength:
+            sunkenShipLength = which_sunk((ay, ax), state.player1.guesses, state.player2.ships)
+            if sunkenShipLength is not None:
                 return arr
             if (ay-1, ax) in shipCoords1 and (ay-1, ax) not in arr and (ay-1, ax) not in state.player1.guesses:
                 arr.append((ay-1, ax))
-                med_ai_traverse(ax, ay-1, shipCoords1, arr, sunkenShipLength)
+                state.update((ay-1, ax))
+                med_ai_traverse(ax, ay-1, shipCoords1, arr)
             if (ay, ax+1) in shipCoords1 and (ay, ax+1) not in arr and (ay, ax+1) not in state.player1.guesses:
                 arr.append((ay, ax+1))
-                med_ai_traverse(ax+1, ay, shipCoords1, arr, sunkenShipLength)
+                state.update((ay, ax+1))
+                med_ai_traverse(ax+1, ay, shipCoords1, arr)
 
             if (ay+1, ax) in shipCoords1 and (ay+1, ax) not in arr and (ay+1, ax) not in state.player1.guesses:
                 arr.append((ay+1, ax))
-                med_ai_traverse(ax, ay+1, shipCoords1, arr, sunkenShipLength)
+                state.update((ay+1, ax))
+                med_ai_traverse(ax, ay+1, shipCoords1, arr)
         
             if (ay, ax-1) in shipCoords1 and (ay, ax-1) not in arr and (ay, ax-1) not in state.player1.guesses:
                 arr.append((ay, ax-1))
-                med_ai_traverse(ax-1, ay, shipCoords1, arr, sunkenShipLength)
+                state.update((ay, ax-1))
+                med_ai_traverse(ax-1, ay, shipCoords1, arr)
 
             else:
-                return
+                med_ai_traverse(arr[0][1], arr[0][0], shipCoords1, arr)
 
 
 
@@ -681,10 +686,15 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     if sunkenShipLength == 1:
                         hits.append(arr[0])
                         state.update(arr[0])
-                    else:
-                        listOfHitsInTurn = med_ai_traverse(ax, ay, flatten(state.player2.ships), arr, sunkenShipLength)
+                    elif sunkenShipLength is not None:
+                        listOfHitsInTurn = med_ai_traverse(ax, ay, flatten(state.player2.ships), arr)
                         hits.append(listOfHitsInTurn)
                         state.update(listOfHitsInTurn)
+                        if state.is_game_over():
+                            pygame.display.flip()
+                            pygame.time.delay(2000)
+                            screen.fill(colors['BLACK'])
+                            return state.player2.name
                 else:
                     state.update((y,x))
                 aiGuessedText = TextBox("Guess: {}".format((y,x)))

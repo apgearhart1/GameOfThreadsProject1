@@ -551,30 +551,30 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
             print("leaving function")
             print(arr)
             return arr
-        elif (ay-1, ax) in flatten(shipCoords1) and ay-1 > 0 and (ay-1,ax) not in arr:
+        if (ay-1, ax) in flatten(shipCoords1) and ay-1 > 0 and (ay-1,ax) not in arr:
             print("Going up")
             arr.append((ay-1, ax))
             state.update((ay-1, ax))
-            med_ai_traverse(ax, ay-1, shipCoords1, arr)
-        elif (ay, ax+1) in flatten(shipCoords1) and ax+1 < 9 and (ay,ax+1) not in arr:
+            return med_ai_traverse(ax, ay-1, shipCoords1, arr)
+        if (ay, ax+1) in flatten(shipCoords1) and ax+1 < 9 and (ay,ax+1) not in arr:
             print("Going right")
             arr.append((ay, ax+1))
             state.update((ay, ax+1))
-            med_ai_traverse(ax+1, ay, shipCoords1, arr)
+            return med_ai_traverse(ax+1, ay, shipCoords1, arr)
 
-        elif (ay+1, ax) in flatten(shipCoords1) and ay+1 < 9 and (ay+1,ax) not in arr:
+        if (ay+1, ax) in flatten(shipCoords1) and ay+1 < 9 and (ay+1,ax) not in arr:
             print("Going down")
             arr.append((ay+1, ax))
             state.update((ay+1, ax))
-            med_ai_traverse(ax, ay+1, shipCoords1, arr)
+            return med_ai_traverse(ax, ay+1, shipCoords1, arr)
 
-        elif (ay, ax-1) in flatten(shipCoords1) and ax-1 > 0 and (ay,ax-1) not in arr:
+        if (ay, ax-1) in flatten(shipCoords1) and ax-1 > 0 and (ay,ax-1) not in arr:
             print("Going left")
             arr.append((ay, ax-1))
             state.update((ay, ax-1))
-            med_ai_traverse(ax-1, ay, shipCoords1, arr)
+            return med_ai_traverse(ax-1, ay, shipCoords1, arr)
 
-        else:
+        if not checkDestroyed(arr, shipCoords1):
             print("Going back to the original anchor")
             return med_ai_traverse(arr[0][1], arr[0][0], shipCoords1, arr) #arr[0][0,1] is the original hit point
 
@@ -701,17 +701,15 @@ def run_ai_game_loop(shipCoords1, shipCoords2, aiDifficulty):
                     hits.append((ay,ax))
                     arr = [(ay,ax)]
                     #sunkenShipLength = which_sunk((ay,ax), state.player1.guesses, state.player2.ships)
-                    
-                    
                     print("true")
                     player2Ships = state.player2.ships
                     listOfHitsInTurn = med_ai_traverse(ax, ay, state.player1.ships, arr)
                     hits.append(listOfHitsInTurn) #add the list of hits from recursive function to hits and guesses
-                    #state.update(listOfHitsInTurn)
-                    sunkenShipLength = which_sunk((ay,ax), state.player2.guesses, state.player1.ships)
+                    state.update(listOfHitsInTurn)
+                    sunkenShipLength = which_sunk((ay,ax), state.player1.guesses, state.player2.ships)
                     if sunkenShipLength is not None:
-                        #sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
-                        #screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
+                        sunkAlertBox = generate_sunk_ship_alert(sunkenShipLength)
+                        screen.blit(sunkAlertBox.surface, sunkAlertBox.rect)
                         pygame.display.flip()
                         if state.is_game_over():
                             pygame.display.flip()
